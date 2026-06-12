@@ -633,6 +633,53 @@ const curriculumData = {
           mnemonic: "걱정 묻기 = '무엇이(What)' '잘못됐니(wrong)'?",
           misconception: "What's wrong?은 상대방을 나무라거나 비난하는 말이다 (X, 상대방에게 무슨 곤란한 일이 생겼는지 안부를 묻는 따뜻한 배려의 표현입니다)",
           explanation: "몸이 아파 보이거나 슬퍼 보이는 친구에게 공감하며 다가가서 안부를 확인하고 걱정을 표할 때 쓰는 대표적인 구문입니다."
+        },
+        {
+          term: "because vs because of",
+          definition: "이유를 나타내는 표현으로, 접속사 because 뒤에는 '주어 + 동사'의 절이 오고 전치사 because of 뒤에는 '명사(구)'가 옴",
+          mnemonic: "because 뒤에는 문장(S+V), because of 뒤에는 명사(Noun)!",
+          misconception: "I stayed home because the rain. 은 옳은 문장이다 (X, rain은 명사이므로 because of를 쓰거나 because it rained로 고쳐야 합니다)",
+          explanation: "원인과 이유를 나타내는 가장 기본적인 전치사와 접속사의 문법적 차이를 묻는 핵심 출제 항목입니다."
+        }
+      ]
+    },
+    "7. Future & Technology": {
+      "IT 가주어 진주어": [
+        {
+          term: "It ~ to부정사",
+          definition: "주어로 쓰인 to부정사구가 길 때, 형식적인 주어 It을 문장 앞에 두고 진짜 주어인 to부정사는 뒤로 보내는 구문",
+          mnemonic: "가주어 진주어 = 머리가 너무 크면 가짜(It)를 세우고 진짜(to부정사)는 뒤로!",
+          misconception: "가주어 It은 '그것'이라고 해석해야 한다 (X, 가주어 It은 자리만 채울 뿐이며 아무런 의미도 해석도 하지 않습니다)",
+          explanation: "영어가 주어 자리에 긴 명사구가 오는 것을 피하려는 성질 때문에 발달한 구문입니다."
+        }
+      ],
+      "미래 조동사": [
+        {
+          term: "Will (조동사)",
+          definition: "미래의 일, 예측, 혹은 말하는 순간의 의지나 결정을 나타내는 조동사로 뒤에 반드시 동사원형이 옴",
+          mnemonic: "will = 미래에 '~할 것이다'라는 나의 강한 의지!",
+          misconception: "will 뒤에 동사원형이 아닌 과거형이나 -ing를 써도 된다 (X, 모든 조동사 바로 뒤에는 반드시 동사의 원래 형태인 동사원형을 적어야 합니다)",
+          explanation: "미래에 대한 예측이나 즉흥적인 결심을 전할 때 사용되는 기초 조동사입니다."
+        }
+      ]
+    },
+    "8. Pride of Korea": {
+      "수동태 표현": [
+        {
+          term: "Passive Voice (수동태)",
+          definition: "주어가 동작의 주체가 아니라 동작의 대상이 되어 '~해지다, ~당하다'의 의미를 갖는 문장 형식 (be + 과거분사)",
+          mnemonic: "수동태 = '당하는 주어 + be동사 + 과거분사(p.p.)'",
+          misconception: "모든 동사는 수동태 문장으로 바꿀 수 있다 (X, 목적어를 취하지 않는 자동사(go, happen 등)는 수동태로 만들 수 없습니다)",
+          explanation: "행위자가 중요하지 않거나 대상을 강조하고 싶을 때 사용하는 문장 형식입니다."
+        }
+      ],
+      "관계대명사": [
+        {
+          term: "목적격 관계대명사",
+          definition: "선행사가 관계사절 내에서 타동사나 전치사의 목적어 역할을 할 때 쓰며, 흔히 생략할 수 있음",
+          mnemonic: "목적격 관대 = 뒤에 '주어 + 동사'가 오며 생략이 언제나 가능!",
+          misconception: "목적격 관계대명사 뒤에 목적어를 그대로 둔다 (X, 관계대명사 자체가 목적어 역할을 대신하므로 관계사절 내의 목적어 자리는 비어 있어야 합니다)",
+          explanation: "앞의 선행사(명사)를 꾸며주면서 관계사절 속에서 생략된 목적어 기능을 하는 연결 표현입니다."
         }
       ]
     }
