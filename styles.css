@@ -139,57 +139,6 @@ button {
   overflow-y: auto;
 }
 
-/* Curriculum Selectors */
-.curriculum-selectors {
-  width: 100%;
-  display: flex;
-  gap: 12px;
-  background-color: var(--color-polar);
-  border: 2px solid var(--color-swan);
-  border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.selector-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.selector-group label {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--color-wolf);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.selector-dropdown {
-  width: 100%;
-  font-family: var(--font-family);
-  font-size: 14px;
-  font-weight: 750;
-  color: var(--color-eel);
-  background-color: white;
-  border: 2px solid var(--color-swan);
-  border-radius: 12px;
-  padding: 10px 12px;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.selector-dropdown:hover {
-  border-color: var(--color-hare);
-}
-
-.selector-dropdown:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-}
-
 .unit-header {
   width: 100%;
   background-color: var(--color-primary);
@@ -407,6 +356,14 @@ button {
   background-color: #e0e7ff;
   border: 2px solid #c7d2fe;
   color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.stat-item.subject-badge:hover {
+  background-color: #c7d2fe;
+  border-color: #a5b4fc;
+  transform: scale(1.05);
 }
 
 .stat-item.streak { color: var(--color-fox); }
@@ -544,8 +501,8 @@ button {
   background-color: white;
   border-radius: 24px;
   width: 90%;
-  max-width: 550px;
-  max-height: 80vh;
+  max-width: 500px;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -614,6 +571,71 @@ button {
   font-weight: 700;
   color: #b45309;
   margin-top: 8px;
+}
+
+/* Modal Selector Group */
+.modal-selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.modal-selector-group label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-wolf);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-dropdown {
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-eel);
+  background-color: white;
+  border: 2px solid var(--color-swan);
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-dropdown:hover {
+  border-color: var(--color-hare);
+}
+
+.modal-dropdown:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.apply-btn {
+  width: 100%;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 14px;
+  border-radius: 16px;
+  border-bottom: 4px solid var(--color-primary-hover);
+  transition: all 0.15s;
+  text-align: center;
+  margin-top: 10px;
+  box-shadow: 0 4px 0 var(--color-primary-hover);
+}
+
+.apply-btn:hover {
+  filter: brightness(1.05);
+}
+
+.apply-btn:active {
+  transform: translateY(4px);
+  border-bottom-width: 0;
+  margin-top: 14px;
 }
 
 @keyframes fadeIn {
@@ -872,10 +894,5 @@ button {
   .main-content {
     margin-top: 0;
     padding: 16px 12px 80px 12px;
-  }
-  
-  .curriculum-selectors {
-    flex-direction: column;
-    gap: 8px;
   }
 }
