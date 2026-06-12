@@ -44,7 +44,7 @@ const curriculumData = {
         },
         {
           term: "공식 이용법",
-          definition: "분모는 순환마디 개수만큼 9를 쓰고 그 뒤에 0을, 분자는 전체 수에서 순환하지 않는 부분을 빼서 구하는 방법",
+          definition: "분모는 순환마디 숫자 개수만큼 9를 쓰고 그 뒤에 0을, 분자는 전체 수에서 순환하지 않는 부분을 빼서 구하는 방법",
           mnemonic: "공식법 = 분모는 '9와 0', 분자는 '전체 빼기 비순환'",
           misconception: "순환소수 0.12(2에 점)의 분모는 99이다 (X, 순환하는 자리는 1개이므로 9, 소수 첫째 자리는 순환 안 하므로 0을 붙여 90이 됩니다)",
           explanation: "식을 세우는 복잡한 과정 대신, 순환마디 개수와 소수점 아래 비순환 자리수를 세어 바로 분수로 바꾸는 공식입니다."
@@ -90,7 +90,7 @@ const curriculumData = {
         {
           term: "원자",
           definition: "물질을 이루는 가장 작은 기본 입자로, 원자핵과 전자로 구성됨",
-          mnemonic: "원자 = 물질을 이루는 동글동글 '원'형 '자'석 입자",
+          mnemonic: "원자 = 물질의 동글동글 '원'형 '자'석 입자",
           misconception: "원자는 전기적으로 항상 플러스를 띤다 (X, 양전하의 원자핵과 음전하의 전자의 총 전하량이 같아서 중성입니다)",
           explanation: "화학적 성질을 잃지 않고 쪼갤 수 있는 물질의 최소 단위 알갱이이며, 중심의 핵과 주변의 전자로 되어 있습니다."
         },
@@ -104,7 +104,7 @@ const curriculumData = {
         {
           term: "전자",
           definition: "원자핵 주위를 돌고 있으며 음전하(-)를 띠는 아주 가벼운 입자",
-          mnemonic: "전자 = 원자핵 주변을 '전'속력으로 도는 '자'식들",
+          mnemonic: "전자 = 원자핵 주위를 '전'속력으로 도는 '자'식들",
           misconception: "전자는 핵과 크기나 질량이 비슷하다 (X, 전자의 질량은 원자핵에 비해 무시할 수 있을 정도로 엄청나게 가볍습니다)",
           explanation: "핵 주변 공간에서 엄청나게 빠르게 회전하고 있는 마이너스 성질의 초미세 입자입니다."
         }
@@ -119,7 +119,7 @@ const curriculumData = {
         },
         {
           term: "앙금",
-          definition: "특정 양이온과 음이온이 결합하여 물에 녹지 않고 가라앉는 물질",
+          definition: "특정 양이온 and 음이온이 결합하여 물에 녹지 않고 가라앉는 물질",
           mnemonic: "앙금 = 물에 안 녹고 '앙' 버티며 가라앉는 '금'속성 고체",
           misconception: "모든 종류의 이온 결합은 앙금을 만든다 (X, 나트륨 이온(Na+), 칼륨 이온(K+), 질산 이온(NO3-) 등은 앙금을 만들지 않습니다)",
           explanation: "수용액 속의 특정 이온들이 만나 서로 강하게 결합하여 물 분자가 떼어내지 못하고 고체로 변해 밑으로 가라앉은 물질입니다."
@@ -225,10 +225,10 @@ const curriculumData = {
         },
         {
           term: "빗살무늬 토기",
-          definition: "신석기 시대의 대표적인 토기로 밑이 뾰족하거나 둥글고 겉면에 빗살 무늬를 새김",
+          definition: "신석기 시대의 대표적인 토기로 밑이 뾰족하거나 둥글고 겉면에 빗살 모양 무늬가 있는 식량 저장 도구",
           mnemonic: "빗살무늬 토기 = '빗'으로 '살'며시 그은 것 같은 무늬의 저장용 진흙 그릇",
-          misconception: "빗살무늬 토기는 바닥이 평평해서 테이블 위에 세우기 좋았다 (X, 강가나 바닷가 모래 또는 진흙땅에 꽂아 세우기 편하도록 밑바닥을 뾰족하게 만들었습니다)",
-          explanation: "식량을 보관하고 끓여 조리하기 위해 흙으로 빚어 단단하게 구워 만든 신석기 시대의 상징적 유물입니다."
+          misconception: "빗살무늬 토기의 밑이 뾰족한 이유는 서 있는 식탁에 올려놓기 위해서였다 (X, 강가나 바닷가 모래 또는 진흙땅에 꽂아 세워두기 좋게 만든 것임)",
+          explanation: "진흙을 구워 만든 인류 최초의 화학적 발명품 중 하나로 식량 보관과 요리에 쓰였습니다."
         }
       ]
     }
@@ -236,7 +236,7 @@ const curriculumData = {
 };
 
 // ============================================================================
-// 2. State Management & Initialization
+// 2. State Management & Initialization (Safe Loading & Sanitizing)
 // ============================================================================
 const defaultState = {
   xp: 0,
@@ -249,11 +249,32 @@ const defaultState = {
   progress: {} // key: "Subject|Unit|Subunit" -> value: stepIndex (0 to 4. 5 means completed)
 };
 
-let appState = JSON.parse(localStorage.getItem('allcleState')) || { ...defaultState };
+let appState = { ...defaultState };
 
-// Initialize default progress if missing in legacy state
+try {
+  const saved = localStorage.getItem('allcleState');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    Object.assign(appState, parsed);
+  }
+} catch (e) {
+  console.error("Failed to load local storage state:", e);
+}
+
+// Ensure progress object exists
 if (!appState.progress) {
   appState.progress = {};
+}
+
+// Sanitize state values against curriculumData (Prevents undefined crashes)
+if (!curriculumData[appState.selectedSubject]) {
+  appState.selectedSubject = Object.keys(curriculumData)[0];
+}
+if (!curriculumData[appState.selectedSubject][appState.selectedUnit]) {
+  appState.selectedUnit = Object.keys(curriculumData[appState.selectedSubject])[0];
+}
+if (!curriculumData[appState.selectedSubject][appState.selectedUnit][appState.selectedSubunit]) {
+  appState.selectedSubunit = Object.keys(curriculumData[appState.selectedSubject][appState.selectedUnit])[0];
 }
 
 // 5 Master Steps (Node Configurations)
@@ -275,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Lucide Icons
   lucide.createIcons();
 
-  // 2. Initialize Dropdowns
+  // 2. Initialize Dropdowns Safely
   initDropdowns();
 
   // 3. Setup Guidebook Modal Listeners
@@ -295,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
-// 3. Dropdowns Setup & Listener Logic
+// 3. Dropdowns Setup & Safe Listener Logic
 // ============================================================================
 function initDropdowns() {
   const subjectSelect = document.getElementById('subject-select');
@@ -311,20 +332,40 @@ function initDropdowns() {
     subjectSelect.appendChild(opt);
   });
 
-  // Set initial selections from state
-  subjectSelect.value = appState.selectedSubject || Object.keys(curriculumData)[0];
+  // Ensure subject selection is valid, then set it
+  if (!curriculumData[appState.selectedSubject]) {
+    appState.selectedSubject = Object.keys(curriculumData)[0];
+  }
+  subjectSelect.value = appState.selectedSubject;
+
+  // Populate Units based on Subject
   updateUnitDropdown();
-  unitSelect.value = appState.selectedUnit || Object.keys(curriculumData[subjectSelect.value])[0];
+  
+  // Ensure unit selection is valid, then set it
+  if (!curriculumData[appState.selectedSubject][appState.selectedUnit]) {
+    appState.selectedUnit = Object.keys(curriculumData[appState.selectedSubject])[0];
+  }
+  unitSelect.value = appState.selectedUnit;
+
+  // Populate Subunits based on Unit
   updateSubunitDropdown();
-  subunitSelect.value = appState.selectedSubunit || Object.keys(curriculumData[subjectSelect.value][unitSelect.value])[0];
+  
+  // Ensure subunit selection is valid, then set it
+  if (!curriculumData[appState.selectedSubject][appState.selectedUnit][appState.selectedSubunit]) {
+    appState.selectedSubunit = Object.keys(curriculumData[appState.selectedSubject][appState.selectedUnit])[0];
+  }
+  subunitSelect.value = appState.selectedSubunit;
 
   // Listeners
   subjectSelect.addEventListener('change', () => {
     appState.selectedSubject = subjectSelect.value;
     updateUnitDropdown();
-    // Default to first unit
+    
+    // Set default unit to first option of the new subject
     appState.selectedUnit = unitSelect.value;
     updateSubunitDropdown();
+    
+    // Set default subunit to first option of the new unit
     appState.selectedSubunit = subunitSelect.value;
     
     saveState();
@@ -334,6 +375,8 @@ function initDropdowns() {
   unitSelect.addEventListener('change', () => {
     appState.selectedUnit = unitSelect.value;
     updateSubunitDropdown();
+    
+    // Set default subunit to first option of the new unit
     appState.selectedSubunit = subunitSelect.value;
     
     saveState();
@@ -357,12 +400,14 @@ function updateUnitDropdown() {
   const subject = subjectSelect.value;
 
   unitSelect.innerHTML = '';
-  Object.keys(curriculumData[subject]).forEach(unit => {
-    const opt = document.createElement('option');
-    opt.value = unit;
-    opt.textContent = unit;
-    unitSelect.appendChild(opt);
-  });
+  if (curriculumData[subject]) {
+    Object.keys(curriculumData[subject]).forEach(unit => {
+      const opt = document.createElement('option');
+      opt.value = unit;
+      opt.textContent = unit;
+      unitSelect.appendChild(opt);
+    });
+  }
 }
 
 function updateSubunitDropdown() {
