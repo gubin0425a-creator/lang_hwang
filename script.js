@@ -302,8 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. Setup Curriculum Selector Modal
   setupCurriculumModal();
 
-  // 4. Setup Guidebook Modal Listeners
-  setupGuidebookModal();
+  // 4. Setup Guidebook Expandable Toggle (Banner)
+  setupGuidebookToggle();
 
   // 5. Setup Main Navigation Close Lesson Button
   document.getElementById('close-lesson').addEventListener('click', () => {
@@ -527,6 +527,12 @@ function renderDashboard() {
   document.getElementById('current-unit-title').textContent = appState.selectedUnit;
   document.getElementById('current-unit-desc').textContent = appState.selectedSubunit;
 
+  // Update Guidebook Banner Content if Expanded
+  const expanded = document.getElementById('guidebook-expanded');
+  if (expanded && expanded.style.display !== 'none') {
+    updateGuidebookContent();
+  }
+
   // Render Map Nodes
   const pathContainer = document.querySelector('.learning-path');
   
@@ -603,30 +609,23 @@ function saveState() {
 }
 
 // ============================================================================
-// 7. Guidebook Modal
+// 7. Expandable Guidebook Banner (Dashboard)
 // ============================================================================
-function setupGuidebookModal() {
-  const modal = document.getElementById('guidebook-modal');
-  const btn = document.getElementById('guidebook-btn');
-  const closeBtn = document.getElementById('close-modal');
+function updateGuidebookContent() {
+  const subject = appState.selectedSubject;
+  const unit = appState.selectedUnit;
+  const subunit = appState.selectedSubunit;
+  const concepts = curriculumData[subject][unit][subunit];
 
-  btn.addEventListener('click', () => {
-    // Populate Modal Content
-    const subject = appState.selectedSubject;
-    const unit = appState.selectedUnit;
-    const subunit = appState.selectedSubunit;
-    const concepts = curriculumData[subject][unit][subunit];
+  const grid = document.getElementById('guidebook-concepts-grid');
+  grid.innerHTML = '';
 
-    document.getElementById('modal-title').textContent = `[${subject}] ${subunit} 핵심요약`;
-    
-    const body = document.getElementById('modal-body');
-    body.innerHTML = '';
-
+  if (concepts) {
     concepts.forEach(c => {
       const card = document.createElement('div');
-      card.className = 'guide-concept-card';
-      
-      const title = document.createElement('h3');
+      card.className = 'expanded-concept-card';
+
+      const title = document.createElement('h4');
       title.textContent = c.term;
       card.appendChild(title);
 
@@ -635,28 +634,40 @@ function setupGuidebookModal() {
       card.appendChild(def);
 
       const exp = document.createElement('p');
-      exp.innerHTML = `<strong>뇌과학 해설:</strong> ${c.explanation}`;
+      exp.innerHTML = `<strong>해설:</strong> ${c.explanation}`;
       card.appendChild(exp);
 
       const mnem = document.createElement('div');
-      mnem.className = 'guide-mnemonic';
+      mnem.className = 'expanded-mnemonic';
       mnem.textContent = `💡 연상 공식: ${c.mnemonic}`;
       card.appendChild(mnem);
 
-      body.appendChild(card);
+      grid.appendChild(card);
     });
+  }
+}
 
-    modal.style.display = 'flex';
-  });
+function setupGuidebookToggle() {
+  const btn = document.getElementById('guidebook-btn');
+  const expanded = document.getElementById('guidebook-expanded');
+  const btnIcon = document.getElementById('guidebook-btn-icon');
+  const btnText = document.getElementById('guidebook-btn-text');
 
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
+  btn.addEventListener('click', () => {
+    const isHidden = expanded.style.display === 'none';
+    if (isHidden) {
+      updateGuidebookContent();
+      expanded.style.display = 'block';
+      btn.classList.add('active');
+      btnText.textContent = '안내 닫기';
+      btnIcon.setAttribute('data-lucide', 'x');
+    } else {
+      expanded.style.display = 'none';
+      btn.classList.remove('active');
+      btnText.textContent = '학습 안내';
+      btnIcon.setAttribute('data-lucide', 'book-open');
     }
+    lucide.createIcons();
   });
 }
 
