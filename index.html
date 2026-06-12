@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Duolingo Clone</title>
+  <title>올클스터디 - 중등 2학년 전과목 전단원 뇌과학 학습앱</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
     <!-- Sidebar -->
     <nav class="sidebar">
       <div class="logo">
-        <h1 class="logo-text">Coring</h1>
+        <h1 class="logo-text">올클스터디</h1>
       </div>
       <ul class="nav-links">
         <li class="active">
@@ -50,25 +50,41 @@
             <span>프로필</span>
           </a>
         </li>
-        <li>
-          <a href="#">
-            <i data-lucide="more-horizontal" class="nav-icon"></i>
-            <span>더 보기</span>
-          </a>
-        </li>
       </ul>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
+      <!-- Curriculum Selectors -->
+      <div class="curriculum-selectors">
+        <div class="selector-group">
+          <label for="subject-select">과목</label>
+          <select id="subject-select" class="selector-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <div class="selector-group">
+          <label for="unit-select">단원</label>
+          <select id="unit-select" class="selector-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <div class="selector-group">
+          <label for="subunit-select">소단원</label>
+          <select id="subunit-select" class="selector-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+      </div>
+
       <div class="unit-header">
         <div class="unit-info">
-          <h2>유닛 1</h2>
-          <p>가나다라 기초 발음과 읽기 (뇌과학 기반)</p>
+          <h2 id="current-unit-title">유닛 1</h2>
+          <p id="current-unit-desc">단원 정보 로딩 중...</p>
         </div>
-        <button class="guidebook-btn">
+        <button class="guidebook-btn" id="guidebook-btn">
           <i data-lucide="book-open"></i>
-          가이드북
+          학습 안내
         </button>
       </div>
 
@@ -78,38 +94,7 @@
           <path d="M50 0 C 80 100, 20 200, 50 300 C 80 400, 20 500, 50 600" fill="none" stroke="#e5e5e5" stroke-width="12" stroke-linecap="round"></path>
         </svg>
 
-        <!-- Lesson Nodes -->
-        <div class="node-container active" style="left: 0; margin-top: 20px;">
-          <div class="tooltip">시작!</div>
-          <button class="lesson-node crown-node">
-            <i data-lucide="star" fill="currentColor"></i>
-          </button>
-        </div>
-
-        <div class="node-container locked" style="left: -30px; margin-top: 60px;">
-          <button class="lesson-node">
-            <i data-lucide="lock"></i>
-          </button>
-        </div>
-
-        <div class="node-container locked" style="left: -40px; margin-top: 60px;">
-          <button class="lesson-node">
-            <i data-lucide="lock"></i>
-          </button>
-        </div>
-
-        <div class="node-container locked" style="left: -10px; margin-top: 60px;">
-          <button class="lesson-node">
-            <i data-lucide="dumbbell"></i>
-          </button>
-        </div>
-
-        <div class="node-container locked" style="left: 30px; margin-top: 60px; margin-bottom: 60px;">
-          <button class="lesson-node trophy-node">
-            <i data-lucide="trophy"></i>
-          </button>
-        </div>
-
+        <!-- Lesson Nodes (Generated dynamically by JS) -->
       </div>
     </main>
 
@@ -117,8 +102,9 @@
     <aside class="right-panel">
       <!-- Top Stats Bar -->
       <div class="stats-bar">
-        <div class="stat-item flag">
-          <span style="font-size: 24px;">🇺🇸</span>
+        <div class="stat-item subject-badge" id="current-subject-badge">
+          <i data-lucide="book-open"></i>
+          <span class="value" id="subject-badge-text">수학</span>
         </div>
         <div class="stat-item streak">
           <i data-lucide="flame" fill="currentColor"></i>
@@ -139,7 +125,7 @@
         <h3>리더보드 잠금 해제</h3>
         <div class="card-content">
           <i data-lucide="shield" size="48" color="#ffc800"></i>
-          <p>레슨을 완료하여 리더보드에서 경쟁을 시작하세요!</p>
+          <p>레슨을 완료하여 학교 친구들과 실시간 랭킹 경쟁을 시작해 보세요!</p>
         </div>
       </div>
 
@@ -173,13 +159,9 @@
       
       <!-- Footer links -->
       <div class="footer-links">
-        <a href="#">정보</a> · 
-        <a href="#">블로그</a> · 
-        <a href="#">스토어</a> · 
-        <a href="#">효율성</a> · 
-        <a href="#">채용 정보</a> · 
-        <a href="#">투자자</a> · 
-        <a href="#">약관</a> · 
+        <a href="#">올클스터디 정보</a> · 
+        <a href="#">소개</a> · 
+        <a href="#">이용약관</a> · 
         <a href="#">개인정보 처리방침</a>
       </div>
     </aside>
@@ -195,10 +177,12 @@
     </div>
     
     <div class="lesson-content">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 48px; width: 100%;">
-        <h2 id="question-text" style="margin-bottom: 0;">질문이 여기에 표시됩니다</h2>
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; margin-bottom: 32px; width: 100%;">
+        <div class="lesson-type-badge" id="lesson-type-badge">뇌과학 인출</div>
+        <h2 id="question-text">질문이 여기에 표시됩니다</h2>
         <button id="play-question-sound" class="sound-btn" style="display: none;">
           <i data-lucide="volume-2"></i>
+          <span>듣기</span>
         </button>
       </div>
       <div class="options-container" id="options-container">
@@ -209,6 +193,19 @@
     <div class="lesson-footer" id="lesson-footer">
       <div class="feedback-message" id="feedback-message"></div>
       <button class="check-btn" id="check-btn" disabled>확인</button>
+    </div>
+  </div>
+
+  <!-- Guidebook Modal -->
+  <div id="guidebook-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">단원 핵심 학습 가이드</h2>
+        <button id="close-modal" class="close-modal-btn"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Injected by JS -->
+      </div>
     </div>
   </div>
 
