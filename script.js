@@ -236,7 +236,7 @@ const curriculumData = {
 };
 
 // ============================================================================
-// 2. State Management & Initialization (Safe Loading & Sanitizing)
+// 2. State Management & Initialization
 // ============================================================================
 const defaultState = {
   xp: 0,
@@ -299,10 +299,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. Initialize Dropdowns Safely
   initDropdowns();
 
-  // 3. Setup Guidebook Modal Listeners
+  // 3. Setup Curriculum Selector Modal
+  setupCurriculumModal();
+
+  // 4. Setup Guidebook Modal Listeners
   setupGuidebookModal();
 
-  // 4. Setup Main Navigation Close Lesson Button
+  // 5. Setup Main Navigation Close Lesson Button
   document.getElementById('close-lesson').addEventListener('click', () => {
     if (confirm("공부를 중단하시겠습니까? 이번 단계의 학습 진행 상황이 저장되지 않습니다.")) {
       closeLesson();
@@ -429,7 +432,34 @@ function updateSubunitDropdown() {
 }
 
 // ============================================================================
-// 4. TTS (Text-to-Speech) System
+// 4. Curriculum Selector Modal
+// ============================================================================
+function setupCurriculumModal() {
+  const modal = document.getElementById('curriculum-modal');
+  const btn = document.getElementById('current-subject-badge');
+  const closeBtn = document.getElementById('close-curriculum');
+  const applyBtn = document.getElementById('apply-curriculum-btn');
+
+  btn.addEventListener('click', () => {
+    modal.style.display = 'flex';
+  });
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  applyBtn.addEventListener('click', closeModal);
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+}
+
+// ============================================================================
+// 5. TTS (Text-to-Speech) System
 // ============================================================================
 let koreanVoice = null;
 let englishVoice = null;
@@ -472,7 +502,7 @@ function playSound(text) {
 }
 
 // ============================================================================
-// 5. Dashboard Rendering (Dynamic Map & Stats)
+// 6. Dashboard Rendering (Dynamic Map & Stats)
 // ============================================================================
 function renderStats() {
   document.querySelector('.streak .value').textContent = appState.streak;
@@ -573,7 +603,7 @@ function saveState() {
 }
 
 // ============================================================================
-// 6. Guidebook Modal
+// 7. Guidebook Modal
 // ============================================================================
 function setupGuidebookModal() {
   const modal = document.getElementById('guidebook-modal');
@@ -631,7 +661,7 @@ function setupGuidebookModal() {
 }
 
 // ============================================================================
-// 7. Dynamic Question Generator (Neuroscience-based)
+// 8. Dynamic Question Generator (Neuroscience-based)
 // ============================================================================
 function getDistractors(type, correctValue) {
   const list = [];
@@ -754,7 +784,7 @@ function generateLessonData(nodeIndex) {
 }
 
 // ============================================================================
-// 8. Learning Gameplay Loop
+// 9. Learning Gameplay Loop
 // ============================================================================
 function startLesson(nodeIndex) {
   if (appState.hearts <= 0) {
@@ -833,6 +863,7 @@ function selectOption(index) {
   document.getElementById('check-btn').disabled = false;
 }
 
+// Handle Check Button Click
 function handleCheckBtnClick() {
   if (!isAnswerChecked) {
     checkAnswer();
@@ -861,7 +892,6 @@ function checkAnswer() {
     feedbackMsg.innerHTML = '<i data-lucide="check-circle" size="32"></i> 정답입니다! 뇌 회로 각인 완료!';
     feedbackMsg.className = 'feedback-message correct-text';
     
-    // Satisfying correct sound effect (high pitch text read)
     playSound("정답");
   } else {
     options[selectedOptionIndex].classList.add('wrong');
