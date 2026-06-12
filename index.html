@@ -55,28 +55,6 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Curriculum Selectors -->
-      <div class="curriculum-selectors">
-        <div class="selector-group">
-          <label for="subject-select">과목</label>
-          <select id="subject-select" class="selector-dropdown">
-            <!-- Injected by JS -->
-          </select>
-        </div>
-        <div class="selector-group">
-          <label for="unit-select">단원</label>
-          <select id="unit-select" class="selector-dropdown">
-            <!-- Injected by JS -->
-          </select>
-        </div>
-        <div class="selector-group">
-          <label for="subunit-select">소단원</label>
-          <select id="subunit-select" class="selector-dropdown">
-            <!-- Injected by JS -->
-          </select>
-        </div>
-      </div>
-
       <div class="unit-header">
         <div class="unit-info">
           <h2 id="current-unit-title">유닛 1</h2>
@@ -205,6 +183,37 @@
       </div>
       <div class="modal-body" id="modal-body">
         <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Curriculum Selector Modal -->
+  <div id="curriculum-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>학습 범위 설정</h2>
+        <button id="close-curriculum" class="close-modal-btn"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-selector-group">
+          <label for="subject-select">학습 과목</label>
+          <select id="subject-select" class="modal-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <div class="modal-selector-group">
+          <label for="unit-select">대단원</label>
+          <select id="unit-select" class="modal-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <div class="modal-selector-group">
+          <label for="subunit-select">소단원</label>
+          <select id="subunit-select" class="modal-dropdown">
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <button id="apply-curriculum-btn" class="apply-btn">학습 시작하기</button>
       </div>
     </div>
   </div>
