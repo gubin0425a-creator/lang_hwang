@@ -1294,9 +1294,18 @@ function generateLessonData(nodeIndex) {
     const concept = concepts[i % concepts.length];
     let qType = nodeIndex;
     
-    // Node 4 is "Final All-Cle", mix all previous types
+    // Phase 1 Consolidation (Node 4)
     if (nodeIndex === 4) {
-      qType = Math.floor(Math.random() * 4);
+      qType = Math.floor(Math.random() * 4); // Randomly mix Chunking (0), Mnemonics (1), Association (2), Half-Recall (3)
+    }
+    // Phase 2 Consolidation (Node 9)
+    else if (nodeIndex === 9) {
+      qType = 5 + Math.floor(Math.random() * 4); // Mix Active Recall (5), Metacognition (6), Speed Recall (7), Error Spotting (8)
+    }
+    // Perfect All-Cle (Node 14)
+    else if (nodeIndex === 14) {
+      const pool = [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13];
+      qType = pool[Math.floor(Math.random() * pool.length)];
     }
 
     let questionText = "";
@@ -1318,8 +1327,14 @@ function generateLessonData(nodeIndex) {
         options = [correctAnswer, ...getDistractors("definition", correctAnswer)];
       }
     } else if (qType === 1) {
-      // Active Recall: direct retrieval from descriptive language
-      typeLabel = "액티브 리콜";
+      // Mnemonics
+      typeLabel = "연상 법칙";
+      questionText = `이 개념을 장기 기억으로 전이하기 위해 연상(Mnemonic) 뇌 지도를 활용하는 올바른 연상 비법은?\n\n[용어: ${concept.term}]`;
+      correctAnswer = concept.mnemonic;
+      options = [correctAnswer, ...getDistractors("mnemonic", correctAnswer)];
+    } else if (qType === 2) {
+      // Association (Explanation/Context)
+      typeLabel = "맥락 연결";
       const subType = i % 2;
       if (subType === 0) {
         questionText = `[뇌과학 직관 설명] 아래 설명을 읽고 지식을 인출(Active Recall)해 빈칸에 들어갈 용어를 맞추세요.\n\n"${concept.explanation}"`;
@@ -1330,21 +1345,60 @@ function generateLessonData(nodeIndex) {
         correctAnswer = concept.explanation;
         options = [correctAnswer, ...getDistractors("explanation", correctAnswer)];
       }
-    } else if (qType === 2) {
-      // Mnemonics
-      typeLabel = "두문자 연상";
-      questionText = `이 개념을 장기 기억으로 전이하기 위해 연상(Mnemonic) 뇌 지도를 활용하는 올바른 연상 비법은?\n\n[용어: ${concept.term}]`;
-      correctAnswer = concept.mnemonic;
-      options = [correctAnswer, ...getDistractors("mnemonic", correctAnswer)];
     } else if (qType === 3) {
+      // Half-Recall: Fill-in-the-blank definition
+      typeLabel = "하프 퀴즈";
+      let blankedDef = concept.definition;
+      const regex = new RegExp(concept.term, 'gi');
+      if (regex.test(blankedDef)) {
+        blankedDef = blankedDef.replace(regex, '_____');
+        correctAnswer = concept.term;
+        options = [correctAnswer, ...getDistractors("term", correctAnswer)];
+      } else {
+        const words = concept.definition.split(' ');
+        let targetWord = "";
+        for (let w of words) {
+          if (w.length >= 3 && !w.includes('(') && !w.includes(')')) {
+            targetWord = w;
+            break;
+          }
+        }
+        if (!targetWord && words.length > 0) {
+          targetWord = words[Math.floor(words.length / 2)];
+        }
+        if (targetWord) {
+          blankedDef = concept.definition.replace(targetWord, '_____');
+          correctAnswer = targetWord;
+          const otherDefs = getDistractors("definition", concept.definition);
+          const otherWords = [];
+          otherDefs.forEach(d => {
+            const dWords = d.split(' ');
+            const w = dWords.find(dw => dw.length >= 3);
+            if (w) otherWords.push(w);
+          });
+          while (otherWords.length < 3) {
+            otherWords.push(otherWords.length === 0 ? "핵심인자" : (otherWords.length === 1 ? "연관관계" : "특수조건"));
+          }
+          options = [correctAnswer, ...otherWords.slice(0, 3)];
+        } else {
+          blankedDef = `_____은(는) ${concept.definition}`;
+          correctAnswer = concept.term;
+          options = [correctAnswer, ...getDistractors("term", correctAnswer)];
+        }
+      }
+      questionText = `다음 정의에서 빈칸 '_____'에 들어갈 가장 알맞은 표현을 고르세요.\n\n"${blankedDef}"`;
+    } else if (qType === 5) {
+      // Active Recall
+      typeLabel = "액티브 리콜";
+      questionText = `[액티브 리콜] 다음 뇌과학 직관 설명 맥락을 바탕으로, 머릿속에서 용어를 적극적으로 인출(Active Recall)하여 알맞은 핵심 용어를 고르세요.\n\n"${concept.explanation}"`;
+      correctAnswer = concept.term;
+      options = [correctAnswer, ...getDistractors("term", correctAnswer)];
+    } else if (qType === 6) {
       // Metacognition (Misconceptions)
       typeLabel = "함정 제거";
-      questionText = `개념 '${concept.term}'에 대해 학교 시험 등에서 자주 범하는 **잘못된 설명(함정 지문)**은 무엇일까요?`;
+      questionText = `핵심 개념 '${concept.term}'에 대해 학생들이 가장 흔히 실수하거나 오해(함정 지문)하는 내용은 무엇일까요?`;
       correctAnswer = concept.misconception;
-
-      // Distractors are correct descriptions of the concept (making them incorrect answers to "spot the mistake")
       const correctFacts = [concept.definition, concept.explanation];
-      // Grab 1 extra correct definition from another concept
       const otherConcepts = [];
       for (const s of Object.keys(curriculumData)) {
         for (const u of Object.keys(curriculumData[s])) {
@@ -1362,8 +1416,85 @@ function generateLessonData(nodeIndex) {
       } else {
         correctFacts.push("이 개념은 핵심 공통 교과 범위의 중요한 성취기준에 부합합니다.");
       }
-
-      options = [correctAnswer, ...correctFacts];
+      options = [correctAnswer, ...correctFacts.slice(0, 3)];
+    } else if (qType === 7) {
+      // Speed challenge: OX
+      typeLabel = "스피드 카드";
+      const isTrueCard = Math.random() > 0.5;
+      if (isTrueCard) {
+        questionText = `[스피드 OX] 다음 설명이 용어 '${concept.term}'에 대한 올바른 진술인지 판단해 보세요.\n\n"${concept.definition}"`;
+        correctAnswer = "그렇다 (O)";
+        options = ["그렇다 (O)", "아니다 (X)"];
+      } else {
+        questionText = `[스피드 OX] 다음 설명이 용어 '${concept.term}'에 대한 올바른 진술인지 판단해 보세요.\n\n"${concept.misconception}"`;
+        correctAnswer = "아니다 (X)";
+        options = ["그렇다 (O)", "아니다 (X)"];
+      }
+    } else if (qType === 8) {
+      // Error Spotting
+      typeLabel = "오류 교정";
+      questionText = `다음 설명은 이 개념의 대표적인 오개념(함정)입니다. 이 오류를 올바르게 교정한 진술을 선택해 보세요.\n\n[오류 지문] "${concept.misconception}"`;
+      correctAnswer = `올바른 교정: ${concept.definition}`;
+      const otherDefs = getDistractors("definition", concept.definition).map(d => `올바른 교정: ${d}`);
+      options = [correctAnswer, ...otherDefs];
+    } else if (qType === 10) {
+      // Interleaving: compare two concepts
+      typeLabel = "개념 교차 매핑";
+      let partnerConcept = null;
+      for (const c of concepts) {
+        if (c.term !== concept.term) {
+          partnerConcept = c;
+          break;
+        }
+      }
+      if (!partnerConcept) {
+        for (const u of Object.keys(curriculumData[subject])) {
+          for (const sub of Object.keys(curriculumData[subject][u])) {
+            for (const c of curriculumData[subject][u][sub]) {
+              if (c.term !== concept.term) {
+                partnerConcept = c;
+                break;
+              }
+            }
+            if (partnerConcept) break;
+          }
+          if (partnerConcept) break;
+        }
+      }
+      if (partnerConcept) {
+        questionText = `[개념 교차 매핑] '${concept.term}'와 '${partnerConcept.term}'의 핵심 차이점을 교차 분석한 결과로 옳은 것은?`;
+        correctAnswer = `'${concept.term}'은(는) [${concept.definition}]이며,\n'${partnerConcept.term}'은(는) [${partnerConcept.definition}]입니다.`;
+        const distractor1 = `'${concept.term}'은(는) [${partnerConcept.definition}]이며,\n'${partnerConcept.term}'은(는) [${concept.definition}]입니다.`;
+        const distractor2 = `'${concept.term}'과 '${partnerConcept.term}'은 정의와 성취 기준이 서로 완전히 동일하여 구분하지 않습니다.`;
+        const distractor3 = `'${concept.term}'은(는) [${concept.misconception}]이며,\n'${partnerConcept.term}'은(는) [${partnerConcept.misconception}]입니다.`;
+        options = [correctAnswer, distractor1, distractor2, distractor3];
+      } else {
+        questionText = `[개념 교차 매핑] '${concept.term}'의 학술적 위상과 개념적 특징을 올바르게 서술한 것은?`;
+        correctAnswer = `'${concept.term}'은(는) ${concept.definition}`;
+        options = [correctAnswer, ...getDistractors("definition", concept.definition)];
+      }
+    } else if (qType === 11) {
+      // Self-Diagnosis
+      typeLabel = "메타인지 진단";
+      questionText = `[메타인지 진단] 용어 '${concept.term}'의 작동 기전 및 원리를 스스로 인지하고 있는지 확인해 봅시다. 다음 중 본질적 원리를 올바르게 진술한 것은 무엇인가요?`;
+      correctAnswer = concept.explanation;
+      options = [correctAnswer, ...getDistractors("explanation", correctAnswer)];
+    } else if (qType === 12) {
+      // Feynman Method
+      typeLabel = "파인만 설명";
+      questionText = `[파인만 학습법] 초등학생 동생에게 용어 '${concept.term}'을(를) 가장 쉽고 친근하게 설명하려 합니다. 뇌과학적으로 가장 기억하기 쉽고 적절한 비유는?`;
+      correctAnswer = concept.mnemonic;
+      options = [correctAnswer, ...getDistractors("mnemonic", correctAnswer)];
+    } else if (qType === 13) {
+      // Exam Prep
+      typeLabel = "만점 모의고사";
+      questionText = `[내신 만점 모의고사] 다음 중 용어 '${concept.term}'에 대한 학교 시험 출제 포인트와 오답 예방 가이드로 가장 올바른 것은?`;
+      correctAnswer = `개념 정의 [${concept.definition}]에 주목하고, 시험 풀이 시 [${concept.misconception}]라는 오개념 함정에 주의해야 합니다.`;
+      const otherTerms = getDistractors("term", concept.term);
+      const d1 = `개념 정의 [${concept.misconception}]에 주목하고, 시험 풀이 시 특별한 함정이 없음에 주의해야 합니다.`;
+      const d2 = `이 개념은 시험에 출제되지 않는 단순 교양 자료이므로 깊게 암기할 필요가 없습니다.`;
+      const d3 = `'${concept.term}' 대신 '${otherTerms[0] || "유관 개념"}'의 정의 [${concept.definition}]로 바꾸어 이해해야 시험 만점이 가능합니다.`;
+      options = [correctAnswer, d1, d2, d3];
     }
 
     // Shuffle options
