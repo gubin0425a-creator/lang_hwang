@@ -2530,7 +2530,35 @@ function checkAnswer() {
     options[currentQ.answer].classList.add('correct');
 
     footer.classList.add('wrong-state');
-    feedbackMsg.innerHTML = '<i data-lucide="x-circle" size="32"></i> 오답입니다. 정답을 암기하세요!';
+    
+    // Save to incorrect notes
+    if (currentQ.concept) {
+      appState.incorrectNotes.push({
+        question: currentQ.question,
+        options: currentQ.options,
+        answer: currentQ.answer,
+        unit: appState.selectedUnit,
+        conceptDesc: currentQ.concept.desc,
+        conceptMnemonic: currentQ.concept.mnemonic,
+        timestamp: Date.now()
+      });
+    }
+
+    // Show mnemonic feedback
+    let feedbackHTML = `<div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px; font-size:24px; font-weight:800;">
+        <i data-lucide="x-circle" size="32"></i> 오답입니다.
+      </div>`;
+    if (currentQ.concept) {
+      feedbackHTML += `
+      <div style="background:rgba(255,255,255,0.2); padding:12px; border-radius:12px; font-size:16px; line-height:1.4;">
+        <strong>💡 핵심 요약:</strong> ${currentQ.concept.desc}<br/>
+        <strong>🧠 연상 암기:</strong> ${currentQ.concept.mnemonic}
+      </div>`;
+    }
+    feedbackHTML += `</div>`;
+
+    feedbackMsg.innerHTML = feedbackHTML;
     feedbackMsg.className = 'feedback-message wrong-text';
     checkBtn.classList.add('wrong-btn');
 
