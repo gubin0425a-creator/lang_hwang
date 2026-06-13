@@ -2157,12 +2157,14 @@ function generateLessonData(nodeIndex) {
   const subject = appState.selectedSubject;
   const unit = appState.selectedUnit;
   const concepts = getMajorUnitConcepts(subject, appState.selectedPublisher, unit);
+  const totalNodes = getTotalNodesForUnit(subject, appState.selectedPublisher, unit);
 
   const questions = [];
   
-  // Calculate difficulty based on progress (0 to 34)
-  // 0-8: diff 0, 9-17: diff 1, 18-26: diff 2, 27-34: diff 3
-  const difficulty = Math.min(3, Math.floor(nodeIndex / 8.5));
+  // Calculate difficulty based on progression (0 to totalNodes - 1)
+  // Phase 0: diff 0, Phase 1: diff 1, Phase 2: diff 2, Phase 3+: diff 3
+  let difficulty = Math.floor((nodeIndex / totalNodes) * 4);
+  if (difficulty > 3) difficulty = 3;
   const optionCount = difficulty === 0 ? 2 : (difficulty === 1 ? 3 : 4);
 
   // Generate 15 questions per lesson
@@ -2173,9 +2175,12 @@ function generateLessonData(nodeIndex) {
     // Types: 0: Fill-in-the-blank (Mnemonic), 1: Concept Matching, 2: OX Misconception, 3: Explanation Match
     // Adjust probabilities based on difficulty
     let availableTypes = [0, 1, 2, 3];
-    if (difficulty >= 2) {
-      // Harder: Less mnemonic hints, more direct concept/misconception tests
-      availableTypes = [1, 2, 3];
+    if (difficulty === 0) {
+      availableTypes = [0, 1]; // Early stages focus on mnemonic and basic definition
+    } else if (difficulty === 1) {
+      availableTypes = [0, 1, 2]; // Introduce OX
+    } else if (difficulty >= 2) {
+      availableTypes = [1, 2, 3]; // Harder: Less mnemonic hints, more direct concept/misconception tests
     }
     
     const qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
@@ -2186,7 +2191,6 @@ function generateLessonData(nodeIndex) {
     let typeLabel = "개념 확인";
 
     if (qType === 0) {
-      // 0: Fill-in-the-blank (Mnemonic)
       typeLabel = "연상 빈칸";
       let blankedMnemonic = concept.mnemonic;
       const termRegex = new RegExp(concept.term, 'gi');
@@ -2204,7 +2208,6 @@ function generateLessonData(nodeIndex) {
       correctAnswer = concept.term;
       options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
     } else if (qType === 1) {
-      // 1: Concept Matching (Definition -> Term)
       typeLabel = "개념 정의";
       let blankedDef = concept.definition;
       const termRegex = new RegExp(concept.term, 'gi');
@@ -2215,7 +2218,6 @@ function generateLessonData(nodeIndex) {
       correctAnswer = concept.term;
       options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
     } else if (qType === 2) {
-      // 2: OX Misconception
       typeLabel = "오개념 OX";
       const isTrueCard = Math.random() > 0.5;
       if (isTrueCard) {
@@ -2231,24 +2233,20 @@ function generateLessonData(nodeIndex) {
       }
       options = ["맞다 (O)", "틀리다 (X)"];
     } else if (qType === 3) {
-      // 3: Explanation Match (Term -> Explanation)
       typeLabel = "심화 이해";
       questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 알맞은 것은?`;
       correctAnswer = concept.explanation;
       options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer)];
     }
 
-    // Limit options based on difficulty (OX questions naturally have 2)
     if (qType !== 2) {
       options = options.slice(0, optionCount);
     }
 
-    // Ensure correctAnswer is always in options (it should be at index 0 before shuffle)
     if (!options.includes(correctAnswer)) {
       options[0] = correctAnswer;
     }
 
-    // Shuffle options
     options = options.sort(() => Math.random() - 0.5);
     const answerIndex = options.indexOf(correctAnswer);
 
@@ -2257,7 +2255,7 @@ function generateLessonData(nodeIndex) {
       options: options,
       answer: answerIndex,
       typeLabel: typeLabel,
-      targetTerm: concept.term, // Read this term using TTS
+      targetTerm: concept.term, 
       concept: concept
     });
   }
