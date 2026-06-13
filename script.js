@@ -1676,6 +1676,24 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCurriculumModal();
   setupGuidebookToggle();
 
+  // Focus Mode Setup
+  const focusModeToggle = document.getElementById('focus-mode-toggle');
+  if (focusModeToggle) {
+    focusModeToggle.checked = appState.settings.focusMode;
+    if (appState.settings.focusMode) {
+      document.body.classList.add('focus-mode');
+    }
+    focusModeToggle.addEventListener('change', (e) => {
+      appState.settings.focusMode = e.target.checked;
+      if (e.target.checked) {
+        document.body.classList.add('focus-mode');
+      } else {
+        document.body.classList.remove('focus-mode');
+      }
+      saveState();
+    });
+  }
+
   // Quick Start Button
   const quickStartBtn = document.getElementById('quick-start-btn');
   if (quickStartBtn) {
