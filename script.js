@@ -1491,16 +1491,34 @@ const defaultState = {
   selectedSubject: "수학",
   selectedPublisher: "공통",
   selectedUnit: "1. 수와 식의 계산",
-  progress: {} // key: "Subject|Publisher|Unit" -> value: stepIndex (0 to 34. 35 means completed)
+  progress: {}, // key: "Subject|Publisher|Unit" -> value: stepIndex (0 to 34. 35 means completed)
+  dailyQuests: {
+    lastDate: "",
+    xpGainedToday: 0,
+    consecutive10CountToday: 0,
+    lessonsCompletedToday: 0,
+    rewardsClaimed: 0
+  },
+  inventory: {
+    streakFreeze: 0,
+    magicBoxExpiry: 0, // timestamp
+    magicBoxNextDayEligible: false
+  }
 };
 
 let appState = { ...defaultState };
+// Deep copy nested objects to avoid reference issues
+appState.dailyQuests = { ...defaultState.dailyQuests };
+appState.inventory = { ...defaultState.inventory };
 
 try {
   const saved = localStorage.getItem('allcleState');
   if (saved) {
     const parsed = JSON.parse(saved);
     Object.assign(appState, parsed);
+    // Ensure nested objects exist and maintain their structure
+    if (!appState.dailyQuests) appState.dailyQuests = { ...defaultState.dailyQuests };
+    if (!appState.inventory) appState.inventory = { ...defaultState.inventory };
   }
 } catch (e) {
   console.error("Failed to load local storage state:", e);
@@ -1509,6 +1527,27 @@ try {
 // Ensure progress object exists
 if (!appState.progress) {
   appState.progress = {};
+}
+
+// Check and reset daily quests if it's a new day
+const todayDate = new Date().toDateString();
+if (appState.dailyQuests.lastDate !== todayDate) {
+  // If magicBoxNextDayEligible was true, it means they earned it yesterday, 
+  // so today when they open the app, it activates for 30 mins.
+  if (appState.inventory.magicBoxNextDayEligible) {
+    appState.inventory.magicBoxExpiry = Date.now() + 30 * 60 * 1000; // 30 mins from now
+    appState.inventory.magicBoxNextDayEligible = false;
+  }
+
+  appState.dailyQuests = {
+    lastDate: todayDate,
+    xpGainedToday: 0,
+    consecutive10CountToday: 0,
+    lessonsCompletedToday: 0,
+    rewardsClaimed: 0
+  };
+  // Save the state immediately since it's a new day
+  localStorage.setItem('allcleState', JSON.stringify(appState));
 }
 
 // Progress migration from old Subject|Unit format to Subject|Publisher|Unit
