@@ -1534,13 +1534,14 @@ const publisherCurriculum = {
 const defaultState = {
   xp: 0,
   streak: 0,
+  lastCompletedDate: "",
   gems: 500,
   hearts: 5,
   selectedSubject: "과학",
   selectedPublisher: "비상교과서",
   selectedUnit: "1. 과학의 기초",
   progress: {}, // key: "Subject|Publisher|Unit" -> value: stepIndex (0 to 34. 35 means completed)
-    incorrectNotes: [],
+  incorrectNotes: [],
   dailyQuests: {
     lastDate: "",
     xpGainedToday: 0,
@@ -1553,7 +1554,6 @@ const defaultState = {
     magicBoxExpiry: 0, // timestamp
     magicBoxNextDayEligible: false
   },
-  incorrectNotes: [], // Array of { question, answer, unit, timestamp }
   settings: {
     focusMode: false,
     anonymousLeaderboard: false
@@ -1571,6 +1571,7 @@ try {
     if (!appState.inventory) appState.inventory = { ...defaultState.inventory };
     if (!appState.incorrectNotes) appState.incorrectNotes = [];
     if (!appState.settings) appState.settings = { ...defaultState.settings };
+    if (!appState.lastCompletedDate) appState.lastCompletedDate = "";
   }
 } catch (e) {
   console.error("Failed to load local storage state:", e);
@@ -1690,6 +1691,37 @@ let currentLessonStreak = 0;
 let lessonConsecutive10Achieved = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Check streak expiration & consume freeze if yesterday was missed
+  if (appState.lastCompletedDate) {
+    const getDaysBetween = (dateStr1, dateStr2) => {
+      if (!dateStr1 || !dateStr2) return 0;
+      const d1 = new Date(dateStr1);
+      const d2 = new Date(dateStr2);
+      d1.setHours(0,0,0,0);
+      d2.setHours(0,0,0,0);
+      const diffTime = Math.abs(d2 - d1);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    };
+
+    const diff = getDaysBetween(appState.lastCompletedDate, todayDate);
+    if (diff > 1) {
+      if (appState.inventory.streakFreeze > 0) {
+        appState.inventory.streakFreeze = 0;
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        appState.lastCompletedDate = yesterday.toDateString();
+        saveState();
+        alert(`연속 학습 프리즈가 소비되었습니다! 연속 학습 기록(${appState.streak}일)이 유지되었습니다.`);
+      } else {
+        appState.streak = 0;
+        appState.lastCompletedDate = "";
+        saveState();
+        alert("어제 연속 학습을 완료하지 않아 연속 학습 기록이 초기화되었습니다.");
+      }
+    }
+  }
+
   lucide.createIcons();
   initDropdowns();
   setupCurriculumModal();
@@ -2807,7 +2839,10 @@ function finishLesson() {
     }
   }
 
-  appState.streak = Math.max(1, appState.streak + 1);
+  if (appState.lastCompletedDate !== todayDate) {
+    appState.streak = Math.max(1, appState.streak + 1);
+    appState.lastCompletedDate = todayDate;
+  }
 
   appState.dailyQuests.lessonsCompletedToday += 1;
   appState.dailyQuests.xpGainedToday += xpEarned;
