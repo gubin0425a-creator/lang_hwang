@@ -2151,16 +2151,34 @@ function getSubjectConcepts(subject) {
   return Array.from(keys).map(key => commonConcepts[key]).filter(Boolean);
 }
 
-function getDistractors(subject, type, correctValue) {
+function getDistractors(subject, type, correctValue, unit = null) {
   const list = [];
-  const subjectConcepts = getSubjectConcepts(subject);
-  for (const concept of subjectConcepts) {
-    const val = concept[type];
-    if (val && val !== correctValue) {
-      list.push(val);
+  
+  // 1. Try to get distractors from the same unit first (high affinity/difficulty)
+  if (unit) {
+    const unitConcepts = getMajorUnitConcepts(subject, appState.selectedPublisher, unit);
+    if (unitConcepts && unitConcepts.length > 0) {
+      for (const concept of unitConcepts) {
+        const val = concept[type];
+        if (val && val !== correctValue) {
+          list.push(val);
+        }
+      }
     }
   }
-  // Fallback to all concepts if subject has too few distinct values
+
+  // 2. If more distractors are needed, pull from the same subject
+  if (list.length < 3) {
+    const subjectConcepts = getSubjectConcepts(subject);
+    for (const concept of subjectConcepts) {
+      const val = concept[type];
+      if (val && val !== correctValue) {
+        list.push(val);
+      }
+    }
+  }
+
+  // 3. Fallback to all concepts if subject has too few distinct values
   if (list.length < 3) {
     for (const concept of Object.values(commonConcepts)) {
       const val = concept[type];
@@ -2172,6 +2190,37 @@ function getDistractors(subject, type, correctValue) {
   const uniqueList = Array.from(new Set(list));
   // Shuffle and take 3
   return uniqueList.sort(() => Math.random() - 0.5).slice(0, 3);
+}
+
+function cleanMisconception(misconception) {
+  if (!misconception) return "";
+  let clean = misconception;
+  const xIndices = [" (X", " (x", "(X", "(x"];
+  for (const marker of xIndices) {
+    const idx = clean.indexOf(marker);
+    if (idx !== -1) {
+      clean = clean.substring(0, idx);
+      break;
+    }
+  }
+  return clean.trim();
+}
+
+function formatStudentStatement(name, term, text, isMisconception = false) {
+  let cleanText = text.trim();
+  if (!/[.!?]$/.test(cleanText)) {
+    if (cleanText.endsWith("수") || cleanText.endsWith("법") || cleanText.endsWith("성분") || cleanText.endsWith("입자") || cleanText.endsWith("소수") || cleanText.endsWith("식") || cleanText.endsWith("형") || cleanText.endsWith("원소") || cleanText.endsWith("이온") || cleanText.endsWith("원자")) {
+      cleanText += "입니다.";
+    } else {
+      cleanText += ".";
+    }
+  }
+  
+  if (isMisconception) {
+    return `${name}: "${cleanText}"`;
+  } else {
+    return `${name}: "${term}은(는) ${cleanText}"`;
+  }
 }
 
 function generateLessonData(nodeIndex) {
@@ -2188,23 +2237,23 @@ function generateLessonData(nodeIndex) {
   if (difficulty > 3) difficulty = 3;
   const optionCount = 4; // User requested 4 options always
 
-  // Generate 15 questions per lesson
+  // Generate 10 questions per lesson
   for (let i = 0; i < 10; i++) {
     const concept = concepts[i % concepts.length];
     
-    // Randomize question type to avoid predictable patterns
-    // Types: 0: Fill-in-the-blank (Mnemonic), 1: Concept Matching, 2: OX Misconception, 3: Explanation Match
-    // Adjust probabilities based on difficulty
-    let availableTypes = [0, 1, 2, 3];
+    // Tighter coupling of question types based on step difficulty
+    let availableTypes = [0, 1, 2, 3, 4, 5, 6];
     if (difficulty === 0) {
-      availableTypes = [0, 1]; // Early stages focus on mnemonic and basic definition
+      availableTypes = [0, 1]; // Step 1: Basic recall (mnemonic fill-in-the-blank, simple term matching)
     } else if (difficulty === 1) {
-      availableTypes = [0, 1, 2]; // Introduce OX
-    } else if (difficulty >= 2) {
-      availableTypes = [1, 2, 3]; // Harder: Less mnemonic hints, more direct concept/misconception tests
+      availableTypes = [1, 2]; // Step 2: Intermediate (definitions & basic OX misconceptions)
+    } else if (difficulty === 2) {
+      availableTypes = [2, 3, 5]; // Step 3: Advanced (OX misconception traps, complex explanation matching, detailed misconception detection)
+    } else {
+      availableTypes = [4, 5, 6]; // Master: Exclusively applied types (Comparative analysis, Misconception analysis, Scenario debates)
     }
     
-    const qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    let qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
     
     let questionText = "";
     let options = [];
@@ -2227,7 +2276,7 @@ function generateLessonData(nodeIndex) {
 
 "${blankedMnemonic}"`;
       correctAnswer = concept.term;
-      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
+      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer, unit)];
     } else if (qType === 1) {
       typeLabel = "개념 정의";
       let blankedDef = concept.definition;
@@ -2237,7 +2286,7 @@ function generateLessonData(nodeIndex) {
 
 "${blankedDef}"`;
       correctAnswer = concept.term;
-      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
+      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer, unit)];
     } else if (qType === 2) {
       typeLabel = "오개념 OX";
       const isTrueCard = Math.random() > 0.5;
@@ -2257,7 +2306,126 @@ function generateLessonData(nodeIndex) {
       typeLabel = "심화 이해";
       questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 알맞은 것은?`;
       correctAnswer = concept.explanation;
-      options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer)];
+      options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer, unit)];
+    } else if (qType === 4) {
+      typeLabel = "비교 분석";
+      let conceptB = null;
+      const otherUnitConcepts = concepts.filter(c => c.term !== concept.term);
+      if (otherUnitConcepts.length > 0) {
+        conceptB = otherUnitConcepts[Math.floor(Math.random() * otherUnitConcepts.length)];
+      } else {
+        const subjectConcepts = getSubjectConcepts(subject).filter(c => c.term !== concept.term);
+        if (subjectConcepts.length > 0) {
+          conceptB = subjectConcepts[Math.floor(Math.random() * subjectConcepts.length)];
+        }
+      }
+
+      if (conceptB) {
+        questionText = `🔍 다음 중 '${concept.term}'와(과) '${conceptB.term}'에 대한 비교 설명으로 가장 옳은 것은?`;
+        correctAnswer = `'${concept.term}'은(는) ${concept.definition}인 반면, '${conceptB.term}'은(는) ${conceptB.definition}이다.`;
+        
+        const opt1 = correctAnswer;
+        const opt2 = `'${conceptB.term}'은(는) ${concept.definition}인 반면, '${concept.term}'은(는) ${conceptB.definition}이다.`;
+        const opt3 = `'${concept.term}'은(는) ${conceptB.definition}인 반면, '${conceptB.term}'은(는) ${concept.definition}이다.`;
+        const opt4 = `'${concept.term}'와(과) '${conceptB.term}' 모두 ${conceptB.definition}에 해당한다.`;
+        
+        options = [opt1, opt2, opt3, opt4];
+      } else {
+        // Fallback to Type 3
+        typeLabel = "심화 이해";
+        questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 알맞은 것은?`;
+        correctAnswer = concept.explanation;
+        options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer, unit)];
+      }
+    } else if (qType === 5) {
+      typeLabel = "오개념 분석";
+      questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 올바르지 않은 오개념을 고르시오.`;
+      
+      const cleanedMisconception = cleanMisconception(concept.misconception);
+      correctAnswer = cleanedMisconception;
+      
+      if (correctAnswer) {
+        const otherUnitConcepts = concepts.filter(c => c.term !== concept.term);
+        let distractor3 = "";
+        if (otherUnitConcepts.length > 0) {
+          const conceptB = otherUnitConcepts[Math.floor(Math.random() * otherUnitConcepts.length)];
+          distractor3 = conceptB.definition;
+        } else {
+          const subjectConcepts = getSubjectConcepts(subject).filter(c => c.term !== concept.term);
+          if (subjectConcepts.length > 0) {
+            const conceptB = subjectConcepts[Math.floor(Math.random() * subjectConcepts.length)];
+            distractor3 = conceptB.definition;
+          } else {
+            distractor3 = `'${concept.term}'은(는) 교과 단원에서 중요하게 취급되는 핵심 교육과정 성취기준 개념이다.`;
+          }
+        }
+        
+        options = [
+          correctAnswer,
+          concept.definition,
+          concept.explanation,
+          distractor3
+        ];
+      } else {
+        // Fallback to Type 3
+        typeLabel = "심화 이해";
+        questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 알맞은 것은?`;
+        correctAnswer = concept.explanation;
+        options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer, unit)];
+      }
+    } else if (qType === 6) {
+      typeLabel = "실생활 토론";
+      
+      const q6Templates = {
+        "과학": `🧪 과학 탐구 시간에 학생들이 '${concept.term}'에 대해 열띤 토론을 하고 있습니다. 이 개념의 성질을 가장 정확하게 설명하고 있는 학생은?`,
+        "수학": `📐 수학 동아리에서 '${concept.term}'의 정의와 성질에 대해 이야기하고 있습니다. 가장 타당한 수학적 설명을 한 학생은?`,
+        "영어": `🔤 영어 작문 발표회에서 학생들이 '${concept.term}' 규칙에 대해 의견을 나누고 있습니다. 올바른 피드백을 말하고 있는 학생은?`,
+        "국어": `✍️ 국어 문법 공부방에서 학생들이 '${concept.term}'에 대해 설명하고 있습니다. 국어학적 개념을 바르게 제시하고 있는 학생은?`,
+        "역사": `📜 역사 토론회에서 학생들이 '${concept.term}'에 대해 대화하고 있습니다. 역사적 사실에 가장 부합하는 설명을 한 학생은?`
+      };
+      
+      questionText = q6Templates[subject] || `💡 학생들이 '${concept.term}'에 대해 이야기하고 있습니다. 가장 올바른 설명을 하고 있는 학생은?`;
+      
+      const studentNames = ["민우", "지민", "서연", "예준", "유진", "도현", "하은", "준우"];
+      const shuffledNames = [...studentNames].sort(() => Math.random() - 0.5);
+      
+      const otherUnitConcepts = concepts.filter(c => c.term !== concept.term);
+      let dist1Concept = null;
+      let dist2Concept = null;
+      let dist3Concept = null;
+      
+      if (otherUnitConcepts.length >= 3) {
+        const shuffledOthers = [...otherUnitConcepts].sort(() => Math.random() - 0.5);
+        dist1Concept = shuffledOthers[0];
+        dist2Concept = shuffledOthers[1];
+        dist3Concept = shuffledOthers[2];
+      } else {
+        const subjectConcepts = getSubjectConcepts(subject).filter(c => c.term !== concept.term);
+        const shuffledOthers = [...subjectConcepts].sort(() => Math.random() - 0.5);
+        if (shuffledOthers.length >= 3) {
+          dist1Concept = shuffledOthers[0];
+          dist2Concept = shuffledOthers[1];
+          dist3Concept = shuffledOthers[2];
+        } else {
+          const allConcepts = Object.values(commonConcepts).filter(c => c.term !== concept.term);
+          const shuffledOthers = [...allConcepts].sort(() => Math.random() - 0.5);
+          dist1Concept = shuffledOthers[0];
+          dist2Concept = shuffledOthers[1];
+          dist3Concept = shuffledOthers[2];
+        }
+      }
+      
+      const dist1Text = dist1Concept ? dist1Concept.definition : "잘못된 사실에 기인한 정의";
+      const dist2Text = dist2Concept ? dist2Concept.explanation : "오개념에 기반한 설명";
+      const dist3Text = cleanMisconception(concept.misconception) || (dist3Concept ? dist3Concept.definition : "혼동하기 쉬운 오설명");
+
+      correctAnswer = formatStudentStatement(shuffledNames[0], concept.term, concept.explanation, false);
+      const opt1 = correctAnswer;
+      const opt2 = formatStudentStatement(shuffledNames[1], concept.term, dist1Text, false);
+      const opt3 = formatStudentStatement(shuffledNames[2], concept.term, dist2Text, false);
+      const opt4 = formatStudentStatement(shuffledNames[3], concept.term, dist3Text, true); // Misconception is already full statement
+      
+      options = [opt1, opt2, opt3, opt4];
     }
 
     if (qType !== 2) {
