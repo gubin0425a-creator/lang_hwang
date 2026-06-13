@@ -2490,7 +2490,7 @@ function checkAnswer() {
     renderStats();
     saveState();
     
-    playSound("오답");
+      playSound("정답");
   }
 
   checkBtn.textContent = '계속하기';
