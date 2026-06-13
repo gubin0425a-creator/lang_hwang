@@ -851,11 +851,26 @@ if (!curriculumData[appState.selectedSubject][appState.selectedUnit][appState.se
 
 // 5 Master Steps (Node Configurations)
 const nodeStyles = [
-  { left: '0px', marginTop: '20px', icon: 'book-open', label: '1단계: 개념 청킹' },
-  { left: '-30px', marginTop: '60px', icon: 'brain', label: '2단계: 액티브 리콜' },
-  { left: '-40px', marginTop: '60px', icon: 'key', label: '3단계: 두문자 암기' },
-  { left: '-10px', marginTop: '60px', icon: 'alert-triangle', label: '4단계: 함정 제거' },
-  { left: '30px', marginTop: '60px', marginBottom: '60px', icon: 'trophy', label: '5단계: 최종 올클' }
+  // Phase 1: Encoding & Concept Fixation
+  { left: '0px', marginTop: '20px', icon: 'book-open', label: '1단계: 개념 청킹 (Chunking)' },
+  { left: '-35px', marginTop: '60px', icon: 'key', label: '2단계: 연상 법칙 (Mnemonics)' },
+  { left: '-50px', marginTop: '60px', icon: 'link', label: '3단계: 맥락 연결 (Association)' },
+  { left: '-20px', marginTop: '60px', icon: 'help-circle', label: '4단계: 하프 퀴즈 (Half-Recall)' },
+  { left: '25px', marginTop: '60px', icon: 'shield', label: '5단계: 1차 기억 복원 (Consolidation 1)' },
+  
+  // Phase 2: Long-Term Transfer & Retrieval
+  { left: '45px', marginTop: '60px', icon: 'brain', label: '6단계: 액티브 리콜 (Active Recall)' },
+  { left: '20px', marginTop: '60px', icon: 'alert-triangle', label: '7단계: 함정 제거 (Metacognition)' },
+  { left: '-15px', marginTop: '60px', icon: 'zap', label: '8단계: 스피드 카드 (Speed Recall)' },
+  { left: '-40px', marginTop: '60px', icon: 'edit-3', label: '9단계: 오류 교정 (Error Spotting)' },
+  { left: '-50px', marginTop: '60px', icon: 'award', label: '10단계: 2차 기억 복원 (Consolidation 2)' },
+  
+  // Phase 3: Permanent Mastery
+  { left: '-15px', marginTop: '60px', icon: 'shuffle', label: '11단계: 개념 교차 매핑 (Interleaving)' },
+  { left: '25px', marginTop: '60px', icon: 'activity', label: '12단계: 메타인지 진단 (Self-Diagnosis)' },
+  { left: '45px', marginTop: '60px', icon: 'mic', label: '13단계: 파인만 설명 (Feynman Method)' },
+  { left: '30px', marginTop: '60px', icon: 'clipboard', label: '14단계: 만점 모의고사 (Exam Prep)' },
+  { left: '0px', marginTop: '60px', marginBottom: '60px', icon: 'trophy', label: '15단계: 최종 완벽 올클 (Perfect All-Cle)' }
 ];
 
 let currentLessonData = [];
