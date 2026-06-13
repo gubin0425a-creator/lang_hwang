@@ -1687,6 +1687,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Setup Guidebook Expandable Toggle (Banner)
   setupGuidebookToggle();
 
+  setupNavigation();
+  setupShop();
+  updateDailyQuestsUI();
+
+  // Setup Chest Modal
+  document.getElementById('close-chest-btn').addEventListener('click', () => {
+    document.getElementById('chest-modal').style.display = 'none';
+  });
+  document.getElementById('claim-chest-btn').addEventListener('click', () => {
+    document.getElementById('chest-modal').style.display = 'none';
+  });
+
   // 5. Setup Main Navigation Close Lesson Button
   document.getElementById('close-lesson').addEventListener('click', () => {
     if (confirm("공부를 중단하시겠습니까? 이번 단계의 학습 진행 상황이 저장되지 않습니다.")) {
@@ -1698,6 +1710,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render initial dashboard stats
   renderStats();
+  
+  // Apply Magic Box Boost if active
+  if (appState.inventory.magicBoxExpiry > Date.now()) {
+    console.log("Magic box boost is active!");
+  }
 });
 
 // ============================================================================
