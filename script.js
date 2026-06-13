@@ -1097,6 +1097,11 @@ function renderStats() {
   document.querySelector('.gems .value').textContent = appState.gems;
   document.querySelector('.hearts .value').textContent = appState.hearts;
 
+  const lessonHeartsVal = document.getElementById('lesson-hearts-value');
+  if (lessonHeartsVal) {
+    lessonHeartsVal.textContent = appState.hearts;
+  }
+
   // Badge Text
   document.getElementById('subject-badge-text').textContent = appState.selectedSubject;
 
@@ -1620,10 +1625,26 @@ function checkAnswer() {
     options[selectedOptionIndex].classList.remove('selected');
 
     footer.classList.add('correct-state');
-    feedbackMsg.innerHTML = '<i data-lucide="check-circle" size="32"></i> 정답입니다! 뇌 회로 각인 완료!';
-    feedbackMsg.className = 'feedback-message correct-text';
     
-    playSound("정답");
+    currentLessonStreak++;
+    let streakRecovered = false;
+    if (currentLessonStreak > 0 && currentLessonStreak % 5 === 0) {
+      if (appState.hearts < 5) {
+        appState.hearts = Math.min(5, appState.hearts + 1);
+        streakRecovered = true;
+        renderStats();
+        saveState();
+      }
+    }
+
+    if (streakRecovered) {
+      feedbackMsg.innerHTML = `<i data-lucide="heart" size="32" fill="currentColor" style="color: var(--color-cardinal);"></i> 정답! ${currentLessonStreak}연속 정답으로 하트 1개 회복! 💖`;
+      playSound("하트가 회복되었습니다");
+    } else {
+      feedbackMsg.innerHTML = `<i data-lucide="check-circle" size="32"></i> 정답입니다! (${currentLessonStreak}연속 정답 🔥)`;
+      playSound("정답");
+    }
+    feedbackMsg.className = 'feedback-message correct-text';
   } else {
     options[selectedOptionIndex].classList.add('wrong');
     options[selectedOptionIndex].classList.remove('selected');
@@ -1636,7 +1657,10 @@ function checkAnswer() {
     feedbackMsg.className = 'feedback-message wrong-text';
     checkBtn.classList.add('wrong-btn');
 
+    currentLessonStreak = 0;
     appState.hearts = Math.max(0, appState.hearts - 1);
+    renderStats();
+    saveState();
     
     playSound("오답");
   }
