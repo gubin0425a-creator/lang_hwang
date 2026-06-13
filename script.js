@@ -2607,7 +2607,8 @@ function closeLesson() {
 
 function finishLesson() {
   // Update state
-  appState.xp += 15; // 15 XP per study node
+  const xpEarned = 15;
+  appState.xp += xpEarned; // 15 XP per study node
   
   const progressKey = `${appState.selectedSubject}|${appState.selectedPublisher}|${appState.selectedUnit}`;
   const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0;
@@ -2620,9 +2621,172 @@ function finishLesson() {
   }
 
   appState.streak = Math.max(1, appState.streak + 1);
+
+  // --- Daily Quest Tracking ---
+  appState.dailyQuests.lessonsCompletedToday += 1;
+  appState.dailyQuests.xpGainedToday += xpEarned;
+  if (currentLessonStreak >= 10) {
+    appState.dailyQuests.consecutive10CountToday += 1;
+  }
   
+  // Magic Box Boost Check
+  if (appState.inventory.magicBoxExpiry > Date.now()) {
+    appState.gems += 25; // Bonus gems
+    alert(`마법상자 버프 작동중! 추가 보석 +25개를 획득했습니다.`);
+  }
+
   saveState();
+  checkDailyQuests(); // Check if they unlocked any new chest
+  updateDailyQuestsUI(); // Update UI progress bars
   
   alert(`학습 완료! +15 XP 획득! (현재 스트릭: ${appState.streak}일)`);
   closeLesson();
+}
+
+// ============================================================================
+// Shop & Quest Logic
+// ============================================================================
+
+function setupNavigation() {
+  const navLearning = document.getElementById('nav-learning');
+  const navShop = document.getElementById('nav-shop');
+  const mainLearningView = document.getElementById('main-learning-view');
+  const mainShopView = document.getElementById('main-shop-view');
+  
+  if (!navLearning || !navShop) return;
+
+  navLearning.addEventListener('click', (e) => {
+    e.preventDefault();
+    navLearning.classList.add('active');
+    navShop.classList.remove('active');
+    mainLearningView.style.display = 'block';
+    mainShopView.style.display = 'none';
+  });
+
+  navShop.addEventListener('click', (e) => {
+    e.preventDefault();
+    navShop.classList.add('active');
+    navLearning.classList.remove('active');
+    mainShopView.style.display = 'block';
+    mainLearningView.style.display = 'none';
+  });
+}
+
+function setupShop() {
+  const buyHeartsBtn = document.getElementById('buy-hearts-btn');
+  const buyFreezeBtn = document.getElementById('buy-freeze-btn');
+
+  if (buyHeartsBtn) {
+    buyHeartsBtn.addEventListener('click', () => {
+      if (appState.hearts >= 5) {
+        alert("이미 하트가 가득 차 있습니다!");
+        return;
+      }
+      if (appState.gems >= 50) {
+        appState.gems -= 50;
+        appState.hearts = 5;
+        saveState();
+        renderStats();
+        alert("하트가 가득 찼습니다!");
+      } else {
+        alert("보석이 부족합니다!");
+      }
+    });
+  }
+
+  if (buyFreezeBtn) {
+    buyFreezeBtn.addEventListener('click', () => {
+      if (appState.inventory.streakFreeze > 0) {
+        alert("이미 연속 학습 얼리기를 보유하고 있습니다!");
+        return;
+      }
+      if (appState.gems >= 200) {
+        appState.gems -= 200;
+        appState.inventory.streakFreeze = 1;
+        saveState();
+        renderStats();
+        alert("연속 학습 얼리기를 구매했습니다!");
+      } else {
+        alert("보석이 부족합니다!");
+      }
+    });
+  }
+}
+
+function updateDailyQuestsUI() {
+  const quest1Fill = document.getElementById('quest-1-fill');
+  const quest2Fill = document.getElementById('quest-2-fill');
+  const quest3Fill = document.getElementById('quest-3-fill');
+  const quest1Text = document.getElementById('quest-1-text');
+  const quest2Text = document.getElementById('quest-2-text');
+  const quest3Text = document.getElementById('quest-3-text');
+
+  if (!quest1Fill) return;
+
+  const q1Progress = Math.min(10, appState.dailyQuests.xpGainedToday);
+  const q2Progress = Math.min(2, appState.dailyQuests.consecutive10CountToday);
+  const q3Progress = Math.min(3, appState.dailyQuests.lessonsCompletedToday);
+
+  quest1Fill.style.width = `${(q1Progress / 10) * 100}%`;
+  quest2Fill.style.width = `${(q2Progress / 2) * 100}%`;
+  quest3Fill.style.width = `${(q3Progress / 3) * 100}%`;
+
+  quest1Text.textContent = `${q1Progress} / 10 XP`;
+  quest2Text.textContent = `${q2Progress} / 2 레슨`;
+  quest3Text.textContent = `${q3Progress} / 3 레슨`;
+}
+
+function checkDailyQuests() {
+  let completedCount = 0;
+  if (appState.dailyQuests.xpGainedToday >= 10) completedCount++;
+  if (appState.dailyQuests.consecutive10CountToday >= 2) completedCount++;
+  if (appState.dailyQuests.lessonsCompletedToday >= 3) completedCount++;
+
+  if (completedCount > appState.dailyQuests.rewardsClaimed) {
+    const rewardsToClaim = completedCount - appState.dailyQuests.rewardsClaimed;
+    
+    // Give rewards sequentially for the newly completed quests
+    for (let i = 0; i < rewardsToClaim; i++) {
+      appState.dailyQuests.rewardsClaimed++;
+      claimChestReward(appState.dailyQuests.rewardsClaimed);
+    }
+  }
+}
+
+function claimChestReward(chestLevel) {
+  const modal = document.getElementById('chest-modal');
+  const icon = document.getElementById('chest-icon');
+  const text = document.getElementById('chest-reward-text');
+  const desc = document.getElementById('chest-desc-text');
+
+  if (chestLevel === 1) {
+    appState.gems += 5;
+    text.textContent = "나무상자 (보석 5개)";
+    text.style.color = "#c28d58";
+    icon.setAttribute('color', "#c28d58");
+    icon.setAttribute('fill', "#c28d58");
+    desc.textContent = "첫 번째 일일 퀘스트를 달성하여 보석 5개를 획득했습니다!";
+  } else if (chestLevel === 2) {
+    appState.gems += 15;
+    text.textContent = "슈퍼상자 (보석 15개)";
+    text.style.color = "#1cb0f6";
+    icon.setAttribute('color', "#1cb0f6");
+    icon.setAttribute('fill', "#1cb0f6");
+    desc.textContent = "두 번째 일일 퀘스트를 달성하여 보석 15개를 획득했습니다!";
+  } else if (chestLevel === 3) {
+    appState.inventory.magicBoxNextDayEligible = true;
+    text.textContent = "마법상자 (내일 30분 버프)";
+    text.style.color = "#ce82ff";
+    icon.setAttribute('color', "#ce82ff");
+    icon.setAttribute('fill', "#ce82ff");
+    desc.textContent = "모든 퀘스트를 달성했습니다! 내일 앱 접속 시 30분 동안 레슨 당 보석 25개가 추가로 지급됩니다.";
+  }
+  
+  saveState();
+  renderStats();
+  
+  if (modal) {
+    modal.style.display = 'flex';
+    lucide.createIcons();
+  }
 }
