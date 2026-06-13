@@ -2434,8 +2434,8 @@ function checkAnswer() {
     }
 
     if (streakRecovered) {
-      feedbackMsg.innerHTML = `<i data-lucide="heart" size="32" fill="currentColor" style="color: var(--color-cardinal);"></i> 정답! ${currentLessonStreak}연속 정답으로 에너지 1개 회복! 💖`;
-      playSound("에너지가 회복되었습니다");
+      feedbackMsg.innerHTML = `<i data-lucide="heart" size="32" fill="currentColor" style="color: var(--color-cardinal);"></i> 정답! ${currentLessonStreak}연속 정답으로 하트 1개 회복! 💖`;
+      playSound("하트가 회복되었습니다");
     } else {
       feedbackMsg.innerHTML = `<i data-lucide="check-circle" size="32"></i> 정답입니다! (${currentLessonStreak}연속 정답 🔥)`;
       playSound("정답");
@@ -2561,7 +2561,7 @@ function finishLesson() {
   
   if (appState.inventory.magicBoxExpiry > Date.now()) {
     appState.gems += 25; 
-    alert(`추가 보급 발동! 추가 크리스탈 +25를 획득했습니다.`);
+    alert(`마법 상자 발동! 추가 보석 +25를 획득했습니다.`);
   }
 
   saveState();
@@ -2622,7 +2622,7 @@ function setupShop() {
   if (buyHeartsBtn) {
     buyHeartsBtn.addEventListener('click', () => {
       if (appState.hearts >= 5) {
-        alert("이미 에너지가 가득 차 있습니다!");
+        alert("이미 하트가 가득 차 있습니다!");
         return;
       }
       if (appState.gems >= 50) {
@@ -2630,9 +2630,9 @@ function setupShop() {
         appState.hearts = 5;
         saveState();
         renderStats();
-        alert("에너지가 가득 찼습니다!");
+        alert("하트가 가득 찼습니다!");
       } else {
-        alert("크리스탈이 부족합니다!");
+        alert("보석이 부족합니다!");
       }
     });
   }
@@ -2650,7 +2650,7 @@ function setupShop() {
         renderStats();
         alert("연속 학습 얼리기를 구매했습니다!");
       } else {
-        alert("크리스탈이 부족합니다!");
+        alert("보석이 부족합니다!");
       }
     });
   }
@@ -2704,25 +2704,25 @@ function claimChestReward(chestLevel) {
 
   if (chestLevel === 1) {
     appState.gems += 5;
-    text.textContent = "에너지 코어 (크리스탈 5개)";
+    text.textContent = "나무상자 (보석 5개)";
     text.style.color = "#c28d58";
     icon.setAttribute('color', "#c28d58");
     icon.setAttribute('fill', "#c28d58");
-    desc.textContent = "첫 번째 일일 미션을 달성하여 크리스탈 5개를 획득했습니다!";
+    desc.textContent = "첫 번째 일일 퀘스트를 달성하여 보석 5개를 획득했습니다!";
   } else if (chestLevel === 2) {
     appState.gems += 15;
-    text.textContent = "하이퍼 코어 (크리스탈 15개)";
+    text.textContent = "슈퍼상자 (보석 15개)";
     text.style.color = "#1cb0f6";
     icon.setAttribute('color', "#1cb0f6");
     icon.setAttribute('fill', "#1cb0f6");
-    desc.textContent = "두 번째 일일 미션을 달성하여 크리스탈 15개를 획득했습니다!";
+    desc.textContent = "두 번째 일일 퀘스트를 달성하여 보석 15개를 획득했습니다!";
   } else if (chestLevel === 3) {
     appState.inventory.magicBoxNextDayEligible = true;
-    text.textContent = "퀀텀 코어 (내일 30분 버프)";
+    text.textContent = "마법상자 (내일 30분 버프)";
     text.style.color = "#ce82ff";
     icon.setAttribute('color', "#ce82ff");
     icon.setAttribute('fill', "#ce82ff");
-    desc.textContent = "모든 미션을 완수했습니다! 내일 앱 접속 시 30분 동안 트레이닝 당 크리스탈 25개가 추가 지급됩니다.";
+    desc.textContent = "모든 퀘스트를 달성했습니다! 내일 앱 접속 시 30분 동안 레슨 당 보석 25개가 추가로 지급됩니다.";
   }
   
   saveState();
@@ -2778,11 +2778,9 @@ function renderLeaderboard() {
     row.style.marginBottom = '8px';
     
     if (user.isMe) {
-      row.style.backgroundColor = 'rgba(99, 102, 241, 0.15)';
-      row.style.border = '1px solid rgba(99, 102, 241, 0.3)';
+      row.style.backgroundColor = 'var(--color-feather)';
     } else {
-      row.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
-      row.style.border = '1.5px solid var(--color-swan)';
+      row.style.backgroundColor = 'white';
     }
 
     let rankColor = 'var(--color-wolf)';
@@ -2827,7 +2825,7 @@ function renderQuestsTab() {
     
     qContainer.innerHTML += `
       <div class="shop-item" style="display: flex; align-items: center; gap: 16px; opacity: ${isDone ? '0.6' : '1'};">
-        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: ${isDone ? 'var(--color-swan)' : 'rgba(255, 255, 255, 0.02)'}; border: 2px solid ${isDone ? 'var(--color-swan)' : q.color}; display: flex; align-items: center; justify-content: center; color: ${isDone ? 'var(--color-wolf)' : q.color};">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: ${isDone ? 'var(--color-swan)' : 'white'}; border: 2px solid ${isDone ? 'var(--color-swan)' : q.color}; display: flex; align-items: center; justify-content: center; color: ${isDone ? 'var(--color-wolf)' : q.color};">
           <i data-lucide="${isDone ? 'check' : q.icon}" size="32"></i>
         </div>
         <div style="flex: 1;">
@@ -2837,8 +2835,8 @@ function renderQuestsTab() {
           </div>
           <div style="color: var(--color-wolf); font-size: 13px; font-weight: 700; margin-top: 4px;">${q.progress} / ${q.total}</div>
         </div>
-        <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 50%; border: 1.5px dashed ${isDone ? 'var(--color-secondary)' : 'var(--color-swan)'}; color: ${isDone ? 'var(--color-bee)' : 'var(--color-wolf)'};">
-          <i data-lucide="gift" size="22" style="filter: ${isDone ? 'drop-shadow(0 0 6px var(--color-bee))' : 'none'};"></i>
+        <div style="width: 50px; height: 50px;">
+          <img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg" style="width:100%; filter: ${isDone ? 'none' : 'grayscale(100%)'};"/>
         </div>
       </div>
     `;
