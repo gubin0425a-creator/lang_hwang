@@ -20,31 +20,31 @@
         <h1 class="logo-text">올클스터디</h1>
       </div>
       <ul class="nav-links">
-        <li class="active">
+        <li class="active" id="nav-learning">
           <a href="#">
             <i data-lucide="home" class="nav-icon"></i>
             <span>학습</span>
           </a>
         </li>
-        <li>
+        <li id="nav-leaderboard">
           <a href="#">
             <i data-lucide="shield" class="nav-icon"></i>
             <span>리더보드</span>
           </a>
         </li>
-        <li>
+        <li id="nav-quests">
           <a href="#">
             <i data-lucide="target" class="nav-icon"></i>
             <span>퀘스트</span>
           </a>
         </li>
-        <li>
+        <li id="nav-shop">
           <a href="#">
             <i data-lucide="shopping-cart" class="nav-icon"></i>
             <span>상점</span>
           </a>
         </li>
-        <li>
+        <li id="nav-profile">
           <a href="#">
             <i data-lucide="user" class="nav-icon"></i>
             <span>프로필</span>
@@ -54,7 +54,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="main-learning-view">
       <!-- Unit Header (Banner with expandable Guidebook) -->
       <div class="unit-header" id="unit-header-card">
         <div class="unit-header-main">
@@ -84,6 +84,42 @@
         </svg>
 
         <!-- Lesson Nodes (Generated dynamically by JS) -->
+      </div>
+      </div>
+    </main>
+
+    <!-- Shop Content -->
+    <main class="main-content" id="main-shop-view" style="display: none;">
+      <div class="shop-header" style="padding: 24px; border-bottom: 2px solid var(--color-swan);">
+        <h2 style="font-size: 24px; font-weight: 800; color: var(--color-eel);">상점</h2>
+      </div>
+      <div class="shop-items-container" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <!-- Hearts Refill -->
+        <div class="shop-item card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px;">
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="shop-item-icon"><i data-lucide="heart" fill="var(--color-cardinal)" color="var(--color-cardinal)" size="48"></i></div>
+            <div class="shop-item-details">
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">하트 가득 채우기</h3>
+              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">하트를 5개로 가득 채워 학습을 계속하세요.</p>
+            </div>
+          </div>
+          <button class="shop-buy-btn" id="buy-hearts-btn" style="background-color: var(--color-macaw); color: white; border: none; padding: 12px 24px; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1899d6;">
+            <i data-lucide="gem" fill="currentColor"></i> 50
+          </button>
+        </div>
+        <!-- Streak Freeze -->
+        <div class="shop-item card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 20px;">
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="shop-item-icon"><i data-lucide="snowflake" fill="var(--color-whale)" color="var(--color-whale)" size="48"></i></div>
+            <div class="shop-item-details">
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">연속 학습 얼리기</h3>
+              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">하루 동안 학습하지 않아도 연속 학습 기록을 유지해 줍니다.</p>
+            </div>
+          </div>
+          <button class="shop-buy-btn" id="buy-freeze-btn" style="background-color: var(--color-macaw); color: white; border: none; padding: 12px 24px; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1899d6;">
+            <i data-lucide="gem" fill="currentColor"></i> 200
+          </button>
+        </div>
       </div>
     </main>
 
@@ -124,23 +160,35 @@
           <h3>일일 퀘스트</h3>
           <a href="#" class="view-all">모두 보기</a>
         </div>
-        <ul class="quest-list">
+        <ul class="quest-list" id="daily-quests-list">
           <li class="quest-item">
             <i data-lucide="target" class="quest-icon" color="#ff9600"></i>
             <div class="quest-details">
               <h4>10 XP 획득하기</h4>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%;"></div>
+                <div class="progress-fill" id="quest-1-fill" style="width: 0%;"></div>
               </div>
+              <p id="quest-1-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 10 XP</p>
+            </div>
+          </li>
+          <li class="quest-item">
+            <i data-lucide="flame" class="quest-icon" color="#ffc800"></i>
+            <div class="quest-details">
+              <h4>레슨 2개에서 10연속 정답 달성하기</h4>
+              <div class="progress-bar">
+                <div class="progress-fill" id="quest-2-fill" style="width: 0%;"></div>
+              </div>
+              <p id="quest-2-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 2 레슨</p>
             </div>
           </li>
           <li class="quest-item">
             <i data-lucide="check-circle" class="quest-icon" color="#1cb0f6"></i>
             <div class="quest-details">
-              <h4>1개 레슨 완료하기</h4>
+              <h4>레슨 3개 완료하기</h4>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%;"></div>
+                <div class="progress-fill" id="quest-3-fill" style="width: 0%;"></div>
               </div>
+              <p id="quest-3-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 3 레슨</p>
             </div>
           </li>
         </ul>
@@ -222,6 +270,23 @@
           </select>
         </div>
         <button id="apply-curriculum-btn" class="apply-btn">학습 시작하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chest Reward Modal -->
+  <div id="chest-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="text-align: center; max-width: 400px;">
+      <div class="modal-header" style="justify-content: center; border-bottom: none;">
+        <h2 id="chest-title" style="font-size: 24px; color: var(--color-eel);">일일 퀘스트 달성!</h2>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div id="chest-icon-container" style="margin: 20px 0; animation: bounce 1s infinite;">
+          <i data-lucide="package" size="80" id="chest-icon" color="#ffc800" fill="#ffc800"></i>
+        </div>
+        <h3 id="chest-reward-text" style="font-size: 24px; color: #ff9600; margin-bottom: 12px; font-weight: 900;">나무상자 (보석 5개)</h3>
+        <p id="chest-desc-text" style="color: var(--color-wolf); margin-bottom: 30px; font-size: 16px;">축하합니다! 보석이 지급되었습니다.</p>
+        <button id="claim-chest-btn" class="apply-btn" style="width: 100%;">받기</button>
       </div>
     </div>
   </div>
