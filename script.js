@@ -1875,7 +1875,7 @@ if ('speechSynthesis' in window) {
 function safeCancelSpeech() {
   try {
     if ('speechSynthesis' in window) {
-      safeCancelSpeech();
+      window.speechSynthesis.cancel();
     }
   } catch (e) {
     console.warn("Speech cancel failed:", e);
