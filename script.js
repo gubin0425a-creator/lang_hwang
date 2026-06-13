@@ -1246,8 +1246,7 @@ function saveState() {
 function updateGuidebookContent() {
   const subject = appState.selectedSubject;
   const unit = appState.selectedUnit;
-  const subunit = appState.selectedSubunit;
-  const concepts = curriculumData[subject][unit][subunit];
+  const concepts = getMajorUnitConcepts(subject, unit);
 
   const grid = document.getElementById('guidebook-concepts-grid');
   grid.innerHTML = '';
@@ -1750,12 +1749,12 @@ function finishLesson() {
   // Update state
   appState.xp += 15; // 15 XP per study node
   
-  const progressKey = `${appState.selectedSubject}|${appState.selectedUnit}|${appState.selectedSubunit}`;
+  const progressKey = `${appState.selectedSubject}|${appState.selectedUnit}`;
   const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0;
 
-  // If they completed the active node, increment subunit progress!
+  // If they completed the active node, increment major unit progress!
   if (activeLessonIndex === currentProgress) {
-    if (currentProgress < 15) {
+    if (currentProgress < 35) {
       appState.progress[progressKey] = currentProgress + 1;
     }
   }
