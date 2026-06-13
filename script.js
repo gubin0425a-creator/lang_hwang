@@ -1630,37 +1630,6 @@ function getMajorUnitConcepts(subject, publisher, unit) {
   return keys.map(key => commonConcepts[key]).filter(Boolean);
 }
 
-const nodeStyles = [];
-for (let i = 0; i < 35; i++) {
-  let phase = Math.floor(i / 10);
-  if (i >= 30) phase = 3;
-  
-  let icon = 'lock';
-  let label = '';
-  
-  if (phase === 0) {
-    icon = 'book-open';
-    label = `${i+1}단계: 초등 기초 다지기 (Step ${i+1})`;
-  } else if (phase === 1) {
-    icon = 'brain';
-    label = `${i+1}단계: 중등 개념 입문 (Step ${i+1})`;
-  } else if (phase === 2) {
-    icon = 'alert-circle';
-    label = `${i+1}단계: 장기 기억 & 함정 (Step ${i+1})`;
-  } else {
-    icon = i === 34 ? 'trophy' : 'award';
-    label = `${i+1}단계: 심화 & 최종 완벽 (Step ${i+1})`;
-  }
-  
-  nodeStyles.push({
-    left: `${Math.round(Math.sin(i * 0.8) * 50)}px`,
-    marginTop: i === 0 ? '20px' : '60px',
-    marginBottom: i === 34 ? '60px' : '0px',
-    icon: icon,
-    label: label,
-    phase: phase
-  });
-}
 
 let currentLessonData = [];
 let currentQuestionIndex = 0;
@@ -1949,12 +1918,21 @@ function renderStats() {
   }
 }
 
+
+function getTotalNodesForUnit(subject, publisher, unit) {
+  const concepts = getMajorUnitConcepts(subject, publisher, unit);
+  if (!concepts || concepts.length === 0) return 5;
+  return Math.max(5, Math.min(35, Math.ceil(concepts.length * 2.5)));
+}
+
 function renderDashboard() {
   renderStats();
 
+  const totalNodes = getTotalNodesForUnit(appState.selectedSubject, appState.selectedPublisher, appState.selectedUnit);
+
   // Update Header title and sub-description
   document.getElementById('current-unit-title').textContent = appState.selectedUnit;
-  document.getElementById('current-unit-desc').textContent = `${appState.selectedSubject} (${appState.selectedPublisher}) · 35단계 기초부터 완벽 마스터리`;
+  document.getElementById('current-unit-desc').textContent = `${appState.selectedSubject} (${appState.selectedPublisher}) 총 ${totalNodes}단계 마스터 코스`;
 
   // Update Guidebook Banner Content if Expanded
   const expanded = document.getElementById('guidebook-expanded');
@@ -1962,13 +1940,45 @@ function renderDashboard() {
     updateGuidebookContent();
   }
 
+  // Generate nodeStyles dynamically
+  const nodeStyles = [];
+  for (let i = 0; i < totalNodes; i++) {
+    let phase = Math.floor((i / totalNodes) * 4); // 0 to 3 or 4
+    if (phase > 3) phase = 3;
+    
+    let icon = 'lock';
+    let label = '';
+    
+    if (phase === 0) {
+      icon = 'book-open';
+      label = `${i+1}단계: 뇌과학 노출 (Step ${i+1})`;
+    } else if (phase === 1) {
+      icon = 'brain';
+      label = `${i+1}단계: 개념 이해 (Step ${i+1})`;
+    } else if (phase === 2) {
+      icon = 'alert-circle';
+      label = `${i+1}단계: 오개념 변별 (Step ${i+1})`;
+    } else {
+      icon = i === totalNodes - 1 ? 'trophy' : 'award';
+      label = `${i+1}단계: 장기기억 인출 (Step ${i+1})`;
+    }
+
+    nodeStyles.push({
+      left: `${Math.round(Math.sin(i * 0.8) * 50)}px`,
+      marginTop: i === 0 ? '20px' : '60px',
+      marginBottom: i === totalNodes - 1 ? '60px' : '0px',
+      icon: icon,
+      label: label,
+      phase: phase
+    });
+  }
+
   // Render Map Nodes
   const pathContainer = document.querySelector('.learning-path');
   
   // Generate SVG path dynamically based on the node wave coordinates
   let pathD = "M50 0";
-  const numNodes = nodeStyles.length;
-  for (let i = 0; i < numNodes; i++) {
+  for (let i = 0; i < totalNodes; i++) {
     const y = i * 110 + 60; // vertical spacing
     const x = 50 + Math.sin(i * 0.8) * 35; // centered wave
     if (i === 0) {
@@ -1981,7 +1991,7 @@ function renderDashboard() {
       pathD += ` C ${prevX} ${cpY1}, ${x} ${cpY2}, ${x} ${y}`;
     }
   }
-  const finalY = numNodes * 110 + 80;
+  const finalY = totalNodes * 110 + 80;
   pathD += ` L 50 ${finalY}`;
 
   pathContainer.innerHTML = `
@@ -1990,9 +2000,8 @@ function renderDashboard() {
     </svg>
   `;
 
-  // Get current progress key (Major Unit level)
   const progressKey = `${appState.selectedSubject}|${appState.selectedPublisher}|${appState.selectedUnit}`;
-  const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0; // 0 to 34. 35 means completed
+  const currentProgress = appState.progress[progressKey] || 0;
 
   nodeStyles.forEach((style, index) => {
     const nodeContainer = document.createElement('div');
@@ -2018,38 +2027,26 @@ function renderDashboard() {
       nodeContainer.style.marginBottom = style.marginBottom;
     }
 
-    // Tooltip for active node
-    if (statusClass === 'active') {
-      const tooltip = document.createElement('div');
-      tooltip.className = 'tooltip';
-      tooltip.textContent = style.label;
-      nodeContainer.appendChild(tooltip);
-    }
+    nodeContainer.innerHTML = `
+      <div class="node-icon">
+        <i data-lucide="${iconName}"></i>
+      </div>
+      <div class="node-label">${style.label}</div>
+    `;
 
-    const button = document.createElement('button');
-    button.className = `lesson-node ${index === 34 ? 'trophy-node' : (index === 0 ? 'crown-node' : (index === 9 || index === 19 || index === 29 ? 'milestone-node' : ''))}`;
-    
-    const icon = document.createElement('i');
-    icon.setAttribute('data-lucide', iconName);
-    if (statusClass === 'completed' || statusClass === 'active') {
-      icon.setAttribute('fill', 'currentColor');
-    }
-    button.appendChild(icon);
-    
-    // Add Click listener if unlocked (completed or active)
-    if (statusClass === 'completed' || statusClass === 'active') {
-      button.addEventListener('click', () => {
-        startLesson(index);
+    if (statusClass === 'active' || statusClass === 'completed') {
+      nodeContainer.addEventListener('click', () => {
+        startLesson(index, totalNodes);
       });
+      nodeContainer.style.cursor = 'pointer';
     }
 
-    nodeContainer.appendChild(button);
     pathContainer.appendChild(nodeContainer);
   });
 
-  // Re-generate Lucide Icons in the newly injected HTML
   lucide.createIcons();
 }
+
 
 function saveState() {
   localStorage.setItem('allcleState', JSON.stringify(appState));
