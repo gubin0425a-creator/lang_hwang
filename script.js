@@ -1125,14 +1125,14 @@ function renderDashboard() {
   
   // Keep the background SVG path line
   pathContainer.innerHTML = `
-    <svg class="path-line" viewBox="0 0 100 500" preserveAspectRatio="none">
-      <path d="M50 0 C 80 100, 20 200, 50 300 C 80 400, 20 500, 50 600" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"></path>
+    <svg class="path-line" viewBox="0 0 100 1500" preserveAspectRatio="none">
+      <path d="M50 0 C 80 300, 20 600, 50 900 C 80 1200, 20 1500, 50 1800" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"></path>
     </svg>
   `;
 
   // Get current progress key
   const progressKey = `${appState.selectedSubject}|${appState.selectedUnit}|${appState.selectedSubunit}`;
-  const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0; // 0 to 4. 5 means all cleared
+  const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0; // 0 to 14. 15 means completed
 
   nodeStyles.forEach((style, index) => {
     const nodeContainer = document.createElement('div');
@@ -1167,7 +1167,7 @@ function renderDashboard() {
     }
 
     const button = document.createElement('button');
-    button.className = `lesson-node ${index === 4 ? 'trophy-node' : (index === 0 ? 'crown-node' : '')}`;
+    button.className = `lesson-node ${index === 14 ? 'trophy-node' : (index === 0 ? 'crown-node' : (index === 4 || index === 9 ? 'milestone-node' : ''))}`;
     
     const icon = document.createElement('i');
     icon.setAttribute('data-lucide', iconName);
@@ -1559,7 +1559,7 @@ function finishLesson() {
 
   // If they completed the active node, increment subunit progress!
   if (activeLessonIndex === currentProgress) {
-    if (currentProgress < 5) {
+    if (currentProgress < 15) {
       appState.progress[progressKey] = currentProgress + 1;
     }
   }
