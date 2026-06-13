@@ -1605,7 +1605,7 @@ Object.keys(appState.progress).forEach(key => {
       else if (oldUnit.includes("조선 사회") || oldUnit.includes("조선 후기")) newUnit = "5. 조선 사회의 변동";
       else if (oldUnit.includes("근현대") || oldUnit.includes("개항")) newUnit = "6. 근현대 사회로의 변화";
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+        safeCancelSpeech();
       }
     }
     
@@ -1872,10 +1872,20 @@ if ('speechSynthesis' in window) {
   loadVoices();
 }
 
+function safeCancelSpeech() {
+  try {
+    if ('speechSynthesis' in window) {
+      safeCancelSpeech();
+    }
+  } catch (e) {
+    console.warn("Speech cancel failed:", e);
+  }
+}
+
 function playSound(text) {
   if (!text) return;
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); 
+    safeCancelSpeech(); 
     
     const utterance = new SpeechSynthesisUtterance(text);
     
@@ -2056,7 +2066,11 @@ function renderDashboard() {
 
 
 function saveState() {
-  localStorage.setItem('allcleState', JSON.stringify(appState));
+  try {
+    localStorage.setItem('allcleState', JSON.stringify(appState));
+  } catch (e) {
+    console.error("Local storage save failed:", e);
+  }
 }
 
 // ============================================================================
@@ -2275,7 +2289,7 @@ function generateLessonData(nodeIndex) {
 // ============================================================================
 function startLesson(nodeIndex) {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
   }
 
   activeLessonIndex = nodeIndex;
@@ -2296,7 +2310,7 @@ function startReviewLesson() {
   if (appState.incorrectNotes.length === 0) return;
 
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
   }
 
   // Shuffle and pick up to 5
@@ -2331,7 +2345,7 @@ function startReviewLesson() {
 
 function renderQuestion() {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
   }
   const currentQ = currentLessonData[currentQuestionIndex];
 
@@ -2457,7 +2471,7 @@ function checkAnswer() {
         options: currentQ.options,
         answer: currentQ.answer,
         unit: appState.selectedUnit,
-        conceptDesc: currentQ.concept.desc,
+        conceptDesc: currentQ.concept.definition || currentQ.concept.desc || "",
         conceptMnemonic: currentQ.concept.mnemonic,
         timestamp: Date.now()
       });
@@ -2477,7 +2491,7 @@ function checkAnswer() {
     if (currentQ.concept) {
       feedbackHTML += `
       <div style="background:rgba(255,255,255,0.2); padding:12px; border-radius:12px; font-size:16px; line-height:1.4;">
-        <strong>💡 핵심 요약:</strong> ${currentQ.concept.desc}<br/>
+        <strong>💡 핵심 요약:</strong> ${currentQ.concept.definition || currentQ.concept.desc}<br/>
         <strong>🧠 연상 암기:</strong> ${currentQ.concept.mnemonic}
       </div>`;
     }
@@ -2529,7 +2543,7 @@ function resetFooter() {
 
 function closeLesson() {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
   }
   document.getElementById('lesson-view').style.display = 'none';
   document.getElementById('dashboard-view').style.display = 'flex';
