@@ -1139,7 +1139,7 @@ function renderDashboard() {
 
   // Update Header title and sub-description
   document.getElementById('current-unit-title').textContent = appState.selectedUnit;
-  document.getElementById('current-unit-desc').textContent = appState.selectedSubunit;
+  document.getElementById('current-unit-desc').textContent = `${appState.selectedSubject} · 35단계 기초부터 완벽 마스터리`;
 
   // Update Guidebook Banner Content if Expanded
   const expanded = document.getElementById('guidebook-expanded');
@@ -1150,16 +1150,34 @@ function renderDashboard() {
   // Render Map Nodes
   const pathContainer = document.querySelector('.learning-path');
   
-  // Keep the background SVG path line
+  // Generate SVG path dynamically based on the node wave coordinates
+  let pathD = "M50 0";
+  const numNodes = nodeStyles.length;
+  for (let i = 0; i < numNodes; i++) {
+    const y = i * 110 + 60; // vertical spacing
+    const x = 50 + Math.sin(i * 0.8) * 35; // centered wave
+    if (i === 0) {
+      pathD += ` L ${x} ${y}`;
+    } else {
+      const prevY = (i - 1) * 110 + 60;
+      const prevX = 50 + Math.sin((i - 1) * 0.8) * 35;
+      const cpY1 = prevY + 40;
+      const cpY2 = y - 40;
+      pathD += ` C ${prevX} ${cpY1}, ${x} ${cpY2}, ${x} ${y}`;
+    }
+  }
+  const finalY = numNodes * 110 + 80;
+  pathD += ` L 50 ${finalY}`;
+
   pathContainer.innerHTML = `
-    <svg class="path-line" viewBox="0 0 100 1500" preserveAspectRatio="none">
-      <path d="M50 0 C 80 300, 20 600, 50 900 C 80 1200, 20 1500, 50 1800" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"></path>
+    <svg class="path-line" viewBox="0 0 100 ${finalY}" preserveAspectRatio="none" style="height: ${finalY}px; width: 100px; position: absolute; top: 0; bottom: 0; z-index: 0;">
+      <path d="${pathD}" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"></path>
     </svg>
   `;
 
-  // Get current progress key
-  const progressKey = `${appState.selectedSubject}|${appState.selectedUnit}|${appState.selectedSubunit}`;
-  const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0; // 0 to 14. 15 means completed
+  // Get current progress key (Major Unit level)
+  const progressKey = `${appState.selectedSubject}|${appState.selectedUnit}`;
+  const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0; // 0 to 34. 35 means completed
 
   nodeStyles.forEach((style, index) => {
     const nodeContainer = document.createElement('div');
@@ -1194,7 +1212,7 @@ function renderDashboard() {
     }
 
     const button = document.createElement('button');
-    button.className = `lesson-node ${index === 14 ? 'trophy-node' : (index === 0 ? 'crown-node' : (index === 4 || index === 9 ? 'milestone-node' : ''))}`;
+    button.className = `lesson-node ${index === 34 ? 'trophy-node' : (index === 0 ? 'crown-node' : (index === 9 || index === 19 || index === 29 ? 'milestone-node' : ''))}`;
     
     const icon = document.createElement('i');
     icon.setAttribute('data-lucide', iconName);
