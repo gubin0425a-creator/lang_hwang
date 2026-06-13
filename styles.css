@@ -966,3 +966,41 @@ button {
   max-width: 800px;
   margin: 0 auto;
 }
+
+/* LEADERBOARD VIEW STYLES */
+#leaderboard-list {
+  display: flex;
+  flex-direction: column;
+}
+
+#leaderboard-list > div {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#leaderboard-list > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* STAT CARD STYLES */
+.stat-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: white;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* QUEST & BADGE ITEM STYLES */
+.shop-item {
+  transition: transform 0.2s, background-color 0.2s;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+}
+
+.shop-item:hover {
+  background-color: var(--color-swan);
+}
