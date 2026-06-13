@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>올클스터디 - 중등 2학년 전과목 전단원 뇌과학 학습앱</title>
+  <title>?�클?�터??- 중등 2?�년 ?�과�??�단???�과???�습??/title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
     <!-- Sidebar -->
     <nav class="sidebar">
       <div class="logo">
-        <h1 class="logo-text">올클스터디</h1>
+        <h1 class="logo-text">?�클?�터??/h1>
       </div>
       <!-- Focus Mode Toggle -->
       <div style="padding: 0 16px; margin-bottom: 8px;">
@@ -29,7 +29,7 @@
       <!-- Anonymous Leaderboard Toggle -->
       <div style="padding: 0 16px 16px 16px; margin-bottom: 8px; border-bottom: 2px solid var(--color-swan);">
         <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-          <span style="font-weight: 800; color: var(--color-eel); font-size: 14px;">리더보드 익명 표시</span>
+          <span style="font-weight: 800; color: var(--color-eel); font-size: 14px;">리더보드 ?�명 ?�시</span>
           <input type="checkbox" id="anonymous-mode-toggle" style="width: 20px; height: 20px; accent-color: var(--color-macaw); cursor: pointer;">
         </label>
       </div>
@@ -37,7 +37,7 @@
         <li class="active" id="nav-learning">
           <a href="#">
             <i data-lucide="home" class="nav-icon"></i>
-            <span>학습</span>
+            <span>?�습</span>
           </a>
         </li>
         <li id="nav-leaderboard">
@@ -49,19 +49,19 @@
         <li id="nav-quests">
           <a href="#">
             <i data-lucide="target" class="nav-icon"></i>
-            <span>퀘스트</span>
+            <span>?�스??/span>
           </a>
         </li>
         <li id="nav-shop">
           <a href="#">
             <i data-lucide="shopping-cart" class="nav-icon"></i>
-            <span>상점</span>
+            <span>?�점</span>
           </a>
         </li>
         <li id="nav-profile">
           <a href="#">
             <i data-lucide="user" class="nav-icon"></i>
-            <span>프로필</span>
+            <span>?�로??/span>
           </a>
         </li>
       </ul>
@@ -72,10 +72,10 @@
       <!-- Quick Actions (Student-centric features) -->
       <div class="quick-actions" style="display: flex; gap: 12px; margin-bottom: 24px;">
         <button id="quick-start-btn" style="flex: 1; background-color: var(--color-macaw); color: white; border: none; border-radius: 16px; padding: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #1899d6; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i data-lucide="play" fill="currentColor"></i> 빠른 시작 (이어하기)
+          <i data-lucide="play" fill="currentColor"></i> 빠른 ?�작 (?�어?�기)
         </button>
         <button id="review-notes-btn" style="flex: 1; background-color: var(--color-whale); color: white; border: none; border-radius: 16px; padding: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #154c79; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i data-lucide="book-open" fill="currentColor"></i> 오답 복습하기
+          <i data-lucide="book-open" fill="currentColor"></i> ?�답 복습?�기
         </button>
       </div>
 
@@ -83,18 +83,18 @@
       <div class="unit-header" id="unit-header-card">
         <div class="unit-header-main">
           <div class="unit-info">
-            <h2 id="current-unit-title">유닛 1</h2>
-            <p id="current-unit-desc">단원 정보 로딩 중...</p>
+            <h2 id="current-unit-title">?�닛 1</h2>
+            <p id="current-unit-desc">?�원 ?�보 로딩 �?..</p>
           </div>
           <button class="guidebook-btn" id="guidebook-btn">
             <i data-lucide="book-open" id="guidebook-btn-icon"></i>
-            <span id="guidebook-btn-text">학습 안내</span>
+            <span id="guidebook-btn-text">?�습 ?�내</span>
           </button>
         </div>
         
         <!-- Expanded Guidebook Content -->
         <div class="unit-guidebook-expanded" id="guidebook-expanded" style="display: none;">
-          <h3 class="guidebook-expanded-title">💡 핵심 요약 가이드 (뇌과학 연상 공식)</h3>
+          <h3 class="guidebook-expanded-title">?�� ?�심 ?�약 가?�드 (?�과???�상 공식)</h3>
           <div class="guidebook-concepts-grid" id="guidebook-concepts-grid">
             <!-- Concepts cards injected by JS -->
           </div>
@@ -114,7 +114,7 @@
     <!-- Shop Content -->
     <main class="main-content" id="main-shop-view" style="display: none;">
       <div class="shop-header" style="padding: 24px; border-bottom: 2px solid var(--color-swan);">
-        <h2 style="font-size: 24px; font-weight: 800; color: var(--color-eel);">상점</h2>
+        <h2 style="font-size: 24px; font-weight: 800; color: var(--color-eel);">?�점</h2>
       </div>
       <div class="shop-items-container" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
         <!-- Hearts Refill -->
@@ -122,8 +122,8 @@
           <div style="display: flex; gap: 16px; align-items: center;">
             <div class="shop-item-icon"><i data-lucide="heart" fill="var(--color-cardinal)" color="var(--color-cardinal)" size="48"></i></div>
             <div class="shop-item-details">
-              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">하트 가득 채우기</h3>
-              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">하트를 5개로 가득 채워 학습을 계속하세요.</p>
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">?�트 가??채우�?/h3>
+              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">?�트�?5개로 가??채워 ?�습??계속?�세??</p>
             </div>
           </div>
           <button class="shop-buy-btn" id="buy-hearts-btn" style="background-color: var(--color-macaw); color: white; border: none; padding: 12px 24px; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1899d6;">
@@ -135,8 +135,8 @@
           <div style="display: flex; gap: 16px; align-items: center;">
             <div class="shop-item-icon"><i data-lucide="snowflake" fill="var(--color-whale)" color="var(--color-whale)" size="48"></i></div>
             <div class="shop-item-details">
-              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">연속 학습 얼리기</h3>
-              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">하루 동안 학습하지 않아도 연속 학습 기록을 유지해 줍니다.</p>
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--color-eel);">?�속 ?�습 ?�리�?/h3>
+              <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">?�루 ?�안 ?�습?��? ?�아???�속 ?�습 기록???��???줍니??</p>
             </div>
           </div>
           <button class="shop-buy-btn" id="buy-freeze-btn" style="background-color: var(--color-macaw); color: white; border: none; padding: 12px 24px; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1899d6;">
@@ -153,8 +153,8 @@
             <i data-lucide="shield" size="40"></i>
           </div>
           <div>
-            <h2 style="font-size: 28px; font-weight: 800; color: var(--color-eel);">브론즈 리그</h2>
-            <p style="color: var(--color-wolf); font-size: 15px;">상위 10명이 실버 리그로 승급합니다</p>
+            <h2 style="font-size: 28px; font-weight: 800; color: var(--color-eel);">브론�?리그</h2>
+            <p style="color: var(--color-wolf); font-size: 15px;">?�위 10명이 ?�버 리그�??�급?�니??/p>
           </div>
         </div>
       </div>
@@ -167,24 +167,24 @@
     <!-- QUESTS VIEW -->
     <main class="main-content" id="main-quests-view" style="display: none;">
       <div style="padding: 24px; border-bottom: 2px solid var(--color-swan);">
-        <h2 style="font-size: 24px; font-weight: 800; color: var(--color-eel);">퀘스트</h2>
-        <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">퀘스트를 완료하고 보상을 획득하세요!</p>
+        <h2 style="font-size: 24px; font-weight: 800; color: var(--color-eel);">?�스??/h2>
+        <p style="color: var(--color-wolf); font-size: 15px; margin-top: 4px;">?�스?��? ?�료?�고 보상???�득?�세??</p>
       </div>
       
       <div style="padding: 24px;">
-        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-bottom: 16px;">일일 퀘스트</h3>
+        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-bottom: 16px;">?�일 ?�스??/h3>
         <div id="quests-list-full" style="display: flex; flex-direction: column; gap: 16px;">
           <!-- Quest items injected here via JS -->
         </div>
 
-        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-top: 40px; margin-bottom: 16px;">월간 배지</h3>
+        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-top: 40px; margin-bottom: 16px;">?�간 배�?</h3>
         <div class="shop-item" style="display: flex; align-items: center; gap: 16px;">
           <div style="width: 60px; height: 60px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-wolf);">
             <i data-lucide="award" size="32"></i>
           </div>
           <div style="flex: 1;">
-            <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">6월 챌린지</div>
-            <div style="color: var(--color-wolf); font-size: 15px;">일일 퀘스트 30개를 완료하세요</div>
+            <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">6??챌린지</div>
+            <div style="color: var(--color-wolf); font-size: 15px;">?�일 ?�스??30개�? ?�료?�세??/div>
             <div class="progress-bar" style="margin-top: 8px;">
               <div class="progress-fill" style="width: 10%;"></div>
             </div>
@@ -201,52 +201,52 @@
           <i data-lucide="user" size="50"></i>
         </div>
         <div>
-          <h2 id="profile-name" style="font-size: 28px; font-weight: 800; color: var(--color-eel);">학생</h2>
-          <p style="color: var(--color-wolf); font-size: 15px;">2026년 가입 • 0 팔로워 • 0 팔로잉</p>
+          <h2 id="profile-name" style="font-size: 28px; font-weight: 800; color: var(--color-eel);">?�생</h2>
+          <p style="color: var(--color-wolf); font-size: 15px;">2026??가????0 ?�로????0 ?�로??/p>
         </div>
       </div>
       
       <div style="padding: 24px;">
-        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-bottom: 16px;">통계</h3>
+        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-bottom: 16px;">?�계</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="stat-card" style="border: 2px solid var(--color-swan); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
             <i data-lucide="flame" size="28" color="var(--color-fox)"></i>
             <div>
               <div id="profile-streak" style="font-size: 20px; font-weight: 800; color: var(--color-eel);">0</div>
-              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">최장 연속 학습일</div>
+              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">최장 ?�속 ?�습??/div>
             </div>
           </div>
           <div class="stat-card" style="border: 2px solid var(--color-swan); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
             <i data-lucide="zap" size="28" color="var(--color-macaw)"></i>
             <div>
               <div id="profile-xp" style="font-size: 20px; font-weight: 800; color: var(--color-eel);">0</div>
-              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">총 XP</div>
+              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">�?XP</div>
             </div>
           </div>
           <div class="stat-card" style="border: 2px solid var(--color-swan); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
             <i data-lucide="shield" size="28" color="var(--color-turtle)"></i>
             <div>
-              <div style="font-size: 20px; font-weight: 800; color: var(--color-eel);">브론즈</div>
-              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">현재 리그</div>
+              <div style="font-size: 20px; font-weight: 800; color: var(--color-eel);">브론�?/div>
+              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">?�재 리그</div>
             </div>
           </div>
           <div class="stat-card" style="border: 2px solid var(--color-swan); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
             <i data-lucide="award" size="28" color="#fcd34d"></i>
             <div>
               <div style="font-size: 20px; font-weight: 800; color: var(--color-eel);">0</div>
-              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">톱 3 달성</div>
+              <div style="font-size: 13px; color: var(--color-wolf); font-weight: 700;">??3 ?�성</div>
             </div>
           </div>
         </div>
 
-        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-top: 40px; margin-bottom: 16px;">업적</h3>
+        <h3 style="font-size: 19px; font-weight: 700; color: var(--color-eel); margin-top: 40px; margin-bottom: 16px;">?�적</h3>
         <div class="shop-item" style="display: flex; align-items: center; gap: 16px;">
           <div style="width: 60px; height: 60px; background: var(--color-feather); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-macaw);">
             <i data-lucide="flame" size="32"></i>
           </div>
           <div style="flex: 1;">
-            <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">불꽃의 달인</div>
-            <div style="color: var(--color-wolf); font-size: 15px;">3일 연속 학습 달성</div>
+            <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">불꽃???�인</div>
+            <div style="color: var(--color-wolf); font-size: 15px;">3???�속 ?�습 ?�성</div>
             <div class="progress-bar" style="margin-top: 8px;">
               <div id="ach-streak-fill" class="progress-fill" style="width: 0%; background-color: var(--color-fox);"></div>
             </div>
@@ -263,7 +263,7 @@
       <div class="stats-bar">
         <div class="stat-item subject-badge" id="current-subject-badge">
           <i data-lucide="book-open"></i>
-          <span class="value" id="subject-badge-text">수학</span>
+          <span class="value" id="subject-badge-text">?�학</span>
         </div>
         <div class="stat-item streak">
           <i data-lucide="flame" fill="currentColor"></i>
@@ -281,24 +281,24 @@
 
       <!-- League Card -->
       <div class="card league-card">
-        <h3>리더보드 잠금 해제</h3>
+        <h3>리더보드 ?�금 ?�제</h3>
         <div class="card-content">
           <i data-lucide="shield" size="48" color="#ffc800"></i>
-          <p>레슨을 완료하여 학교 친구들과 실시간 랭킹 경쟁을 시작해 보세요!</p>
+          <p>?�슨???�료?�여 ?�교 친구?�과 ?�시�???�� 경쟁???�작??보세??</p>
         </div>
       </div>
 
       <!-- Quests Card -->
       <div class="card quests-card">
         <div class="card-header">
-          <h3>일일 퀘스트</h3>
+          <h3>?�일 ?�스??/h3>
           <a href="#" class="view-all">모두 보기</a>
         </div>
         <ul class="quest-list" id="daily-quests-list">
           <li class="quest-item">
             <i data-lucide="target" class="quest-icon" color="#ff9600"></i>
             <div class="quest-details">
-              <h4>10 XP 획득하기</h4>
+              <h4>10 XP ?�득?�기</h4>
               <div class="progress-bar">
                 <div class="progress-fill" id="quest-1-fill" style="width: 0%;"></div>
               </div>
@@ -308,21 +308,21 @@
           <li class="quest-item">
             <i data-lucide="flame" class="quest-icon" color="#ffc800"></i>
             <div class="quest-details">
-              <h4>레슨 2개에서 10연속 정답 달성하기</h4>
+              <h4>?�슨 2개에??10?�속 ?�답 ?�성?�기</h4>
               <div class="progress-bar">
                 <div class="progress-fill" id="quest-2-fill" style="width: 0%;"></div>
               </div>
-              <p id="quest-2-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 2 레슨</p>
+              <p id="quest-2-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 2 ?�슨</p>
             </div>
           </li>
           <li class="quest-item">
             <i data-lucide="check-circle" class="quest-icon" color="#1cb0f6"></i>
             <div class="quest-details">
-              <h4>레슨 3개 완료하기</h4>
+              <h4>?�슨 3�??�료?�기</h4>
               <div class="progress-bar">
                 <div class="progress-fill" id="quest-3-fill" style="width: 0%;"></div>
               </div>
-              <p id="quest-3-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 3 레슨</p>
+              <p id="quest-3-text" style="font-size: 12px; color: var(--color-wolf); margin-top: 4px;">0 / 3 ?�슨</p>
             </div>
           </li>
         </ul>
@@ -330,10 +330,10 @@
       
       <!-- Footer links -->
       <div class="footer-links">
-        <a href="#">올클스터디 정보</a> · 
-        <a href="#">소개</a> · 
-        <a href="#">이용약관</a> · 
-        <a href="#">개인정보 처리방침</a>
+        <a href="#">?�클?�터???�보</a> · 
+        <a href="#">?�개</a> · 
+        <a href="#">?�용?��?</a> · 
+        <a href="#">개인?�보 처리방침</a>
       </div>
     </aside>
   </div>
@@ -353,11 +353,11 @@
     
     <div class="lesson-content">
       <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; margin-bottom: 32px; width: 100%;">
-        <div class="lesson-type-badge" id="lesson-type-badge">뇌과학 인출</div>
-        <h2 id="question-text">질문이 여기에 표시됩니다</h2>
+        <div class="lesson-type-badge" id="lesson-type-badge">?�과???�출</div>
+        <h2 id="question-text">질문???�기???�시?�니??/h2>
         <button id="play-question-sound" class="sound-btn" style="display: none;">
           <i data-lucide="volume-2"></i>
-          <span>듣기</span>
+          <span>?�기</span>
         </button>
       </div>
       <div class="options-container" id="options-container">
@@ -367,7 +367,7 @@
     
     <div class="lesson-footer" id="lesson-footer">
       <div class="feedback-message" id="feedback-message"></div>
-      <button class="check-btn" id="check-btn" disabled>확인</button>
+      <button class="check-btn" id="check-btn" disabled>?�인</button>
     </div>
   </div>
 
@@ -375,35 +375,35 @@
   <div id="curriculum-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>학습 범위 설정</h2>
+        <h2>?�습 범위 ?�정</h2>
         <button id="close-curriculum" class="close-modal-btn"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
         <div class="modal-selector-group">
-          <label for="subject-select">학습 과목</label>
+          <label for="subject-select">?�습 과목</label>
           <select id="subject-select" class="modal-dropdown">
             <!-- Injected by JS -->
           </select>
         </div>
         <div class="modal-selector-group" id="publisher-selector-group">
-          <label for="publisher-select">교과서 출판사</label>
+          <label for="publisher-select">교과??출판??/label>
           <select id="publisher-select" class="modal-dropdown">
             <!-- Injected by JS -->
           </select>
         </div>
         <div class="modal-selector-group">
-          <label for="unit-select">대단원</label>
+          <label for="unit-select">?�?�원</label>
           <select id="unit-select" class="modal-dropdown">
             <!-- Injected by JS -->
           </select>
         </div>
         <div class="modal-selector-group" style="display: none;">
-          <label for="subunit-select">소단원</label>
+          <label for="subunit-select">?�단??/label>
           <select id="subunit-select" class="modal-dropdown">
             <!-- Injected by JS -->
           </select>
         </div>
-        <button id="apply-curriculum-btn" class="apply-btn">학습 시작하기</button>
+        <button id="apply-curriculum-btn" class="apply-btn">?�습 ?�작?�기</button>
       </div>
     </div>
   </div>
@@ -412,20 +412,20 @@
   <div id="chest-modal" class="modal" style="display: none;">
     <div class="modal-content" style="text-align: center; max-width: 400px;">
       <div class="modal-header" style="justify-content: center; border-bottom: none; position: relative;">
-        <h2 id="chest-title" style="font-size: 24px; color: var(--color-eel);">일일 퀘스트 달성!</h2>
+        <h2 id="chest-title" style="font-size: 24px; color: var(--color-eel);">?�일 ?�스???�성!</h2>
         <button id="close-chest-btn" class="close-modal-btn" style="position: absolute; right: 20px; top: 20px;"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body" style="padding: 20px;">
         <div id="chest-icon-container" style="margin: 20px 0; animation: bounce 1s infinite;">
           <i data-lucide="package" size="80" id="chest-icon" color="#ffc800" fill="#ffc800"></i>
         </div>
-        <h3 id="chest-reward-text" style="font-size: 24px; color: #ff9600; margin-bottom: 12px; font-weight: 900;">나무상자 (보석 5개)</h3>
-        <p id="chest-desc-text" style="color: var(--color-wolf); margin-bottom: 30px; font-size: 16px;">축하합니다! 보석이 지급되었습니다.</p>
+        <h3 id="chest-reward-text" style="font-size: 24px; color: #ff9600; margin-bottom: 12px; font-weight: 900;">?�무?�자 (보석 5�?</h3>
+        <p id="chest-desc-text" style="color: var(--color-wolf); margin-bottom: 30px; font-size: 16px;">축하?�니?? 보석??지급되?�습?�다.</p>
         <button id="claim-chest-btn" class="apply-btn" style="width: 100%;">받기</button>
       </div>
     </div>
   </div>
 
-  <script src="script.js?v=20260613a"></script>
+  <script src="script.js?v=20260613b"></script>
 </body>
 </html>
