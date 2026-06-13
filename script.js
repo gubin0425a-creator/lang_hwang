@@ -818,7 +818,7 @@ const defaultState = {
   selectedSubject: "수학",
   selectedUnit: "1. 유리수와 순환소수",
   selectedSubunit: "유리수와 순환소수",
-  progress: {} // key: "Subject|Unit|Subunit" -> value: stepIndex (0 to 4. 5 means completed)
+  progress: {} // key: "Subject|Unit" -> value: stepIndex (0 to 34. 35 means completed)
 };
 
 let appState = { ...defaultState };
@@ -849,35 +849,56 @@ if (!curriculumData[appState.selectedSubject][appState.selectedUnit][appState.se
   appState.selectedSubunit = Object.keys(curriculumData[appState.selectedSubject][appState.selectedUnit])[0];
 }
 
-// 5 Master Steps (Node Configurations)
-const nodeStyles = [
-  // Phase 1: Encoding & Concept Fixation
-  { left: '0px', marginTop: '20px', icon: 'book-open', label: '1단계: 개념 청킹 (Chunking)' },
-  { left: '-35px', marginTop: '60px', icon: 'key', label: '2단계: 연상 법칙 (Mnemonics)' },
-  { left: '-50px', marginTop: '60px', icon: 'link', label: '3단계: 맥락 연결 (Association)' },
-  { left: '-20px', marginTop: '60px', icon: 'help-circle', label: '4단계: 하프 퀴즈 (Half-Recall)' },
-  { left: '25px', marginTop: '60px', icon: 'shield', label: '5단계: 1차 기억 복원 (Consolidation 1)' },
+// Helper to get all concepts of a major unit
+function getMajorUnitConcepts(subject, unit) {
+  const allConcepts = [];
+  const unitData = curriculumData[subject][unit];
+  if (unitData) {
+    Object.keys(unitData).forEach(subunit => {
+      allConcepts.push(...unitData[subunit]);
+    });
+  }
+  return allConcepts;
+}
+
+// Dynamically generate 35-lesson node configuration (zigzag sine wave)
+const nodeStyles = [];
+for (let i = 0; i < 35; i++) {
+  let phase = Math.floor(i / 10);
+  if (i >= 30) phase = 3;
   
-  // Phase 2: Long-Term Transfer & Retrieval
-  { left: '45px', marginTop: '60px', icon: 'brain', label: '6단계: 액티브 리콜 (Active Recall)' },
-  { left: '20px', marginTop: '60px', icon: 'alert-triangle', label: '7단계: 함정 제거 (Metacognition)' },
-  { left: '-15px', marginTop: '60px', icon: 'zap', label: '8단계: 스피드 카드 (Speed Recall)' },
-  { left: '-40px', marginTop: '60px', icon: 'edit-3', label: '9단계: 오류 교정 (Error Spotting)' },
-  { left: '-50px', marginTop: '60px', icon: 'award', label: '10단계: 2차 기억 복원 (Consolidation 2)' },
+  let icon = 'lock';
+  let label = '';
   
-  // Phase 3: Permanent Mastery
-  { left: '-15px', marginTop: '60px', icon: 'shuffle', label: '11단계: 개념 교차 매핑 (Interleaving)' },
-  { left: '25px', marginTop: '60px', icon: 'activity', label: '12단계: 메타인지 진단 (Self-Diagnosis)' },
-  { left: '45px', marginTop: '60px', icon: 'mic', label: '13단계: 파인만 설명 (Feynman Method)' },
-  { left: '30px', marginTop: '60px', icon: 'clipboard', label: '14단계: 만점 모의고사 (Exam Prep)' },
-  { left: '0px', marginTop: '60px', marginBottom: '60px', icon: 'trophy', label: '15단계: 최종 완벽 올클 (Perfect All-Cle)' }
-];
+  if (phase === 0) {
+    icon = 'book-open';
+    label = `${i+1}단계: 초등 기초 다지기 (Step ${i+1})`;
+  } else if (phase === 1) {
+    icon = 'brain';
+    label = `${i+1}단계: 중등 개념 입문 (Step ${i+1})`;
+  } else if (phase === 2) {
+    icon = 'alert-circle';
+    label = `${i+1}단계: 장기 기억 & 함정 (Step ${i+1})`;
+  } else {
+    icon = i === 34 ? 'trophy' : 'award';
+    label = `${i+1}단계: 심화 & 최종 완벽 (Step ${i+1})`;
+  }
+  
+  nodeStyles.push({
+    left: `${Math.round(Math.sin(i * 0.8) * 50)}px`,
+    marginTop: i === 0 ? '20px' : '60px',
+    marginBottom: i === 34 ? '60px' : '0px',
+    icon: icon,
+    label: label,
+    phase: phase
+  });
+}
 
 let currentLessonData = [];
 let currentQuestionIndex = 0;
 let selectedOptionIndex = null;
 let isAnswerChecked = false;
-let activeLessonIndex = 0; // The step number of the node (0 to 14)
+let activeLessonIndex = 0; // The step number of the node (0 to 34)
 let currentLessonStreak = 0; // Track consecutive correct answers for heart recovery
 
 document.addEventListener('DOMContentLoaded', () => {
