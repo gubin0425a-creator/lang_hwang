@@ -2575,19 +2575,33 @@ function finishLesson() {
 // ============================================================================
 
 function setupNavigation() {
-  const navLearning = document.getElementById('nav-learning');
-  const navShop = document.getElementById('nav-shop');
-  const mainLearningView = document.getElementById('main-learning-view');
-  const mainShopView = document.getElementById('main-shop-view');
+  const tabs = ['learning', 'leaderboard', 'quests', 'shop', 'profile'];
   
-  if (!navLearning || !navShop) return;
-
-  navLearning.addEventListener('click', (e) => {
-    e.preventDefault();
-    navLearning.classList.add('active');
-    navShop.classList.remove('active');
-    mainLearningView.style.display = 'block';
-    mainShopView.style.display = 'none';
+  tabs.forEach(tab => {
+    const navItem = document.getElementById(`nav-${tab}`);
+    if (navItem) {
+      navItem.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Hide all views and deactivate all navs
+        tabs.forEach(t => {
+          const view = document.getElementById(`main-${t}-view`);
+          const nav = document.getElementById(`nav-${t}`);
+          if (view) view.style.display = 'none';
+          if (nav) nav.classList.remove('active');
+        });
+        
+        // Show target view and activate nav
+        const targetView = document.getElementById(`main-${tab}-view`);
+        if (targetView) targetView.style.display = 'block';
+        navItem.classList.add('active');
+        
+        // Trigger specific render logic
+        if (tab === 'leaderboard') renderLeaderboard();
+        if (tab === 'quests') renderQuestsTab();
+        if (tab === 'profile') renderProfileTab();
+      });
+    }
   });
 
   navShop.addEventListener('click', (e) => {
@@ -2715,5 +2729,128 @@ function claimChestReward(chestLevel) {
   if (modal) {
     modal.style.display = 'flex';
     lucide.createIcons();
+  }
+}
+
+
+// ============================================================================
+// 7. Tabs Render Logic (Leaderboard, Quests, Profile)
+// ============================================================================
+
+function renderLeaderboard() {
+  const listContainer = document.getElementById('leaderboard-list');
+  if (!listContainer) return;
+  
+  // Generate fake leaderboard data if not exists
+  if (!appState.leaderboardData) {
+    const names = ["김동현", "이서연", "박지민", "최우진", "정예은", "강현우", "조수아", "윤준호", "장서윤", "임도현"];
+    appState.leaderboardData = [];
+    for(let i=0; i<29; i++) {
+      appState.leaderboardData.push({
+        name: names[Math.floor(Math.random() * names.length)] + Math.floor(Math.random() * 100),
+        xp: Math.floor(Math.random() * 2000) + 100,
+        isMe: false,
+        avatarColor: `hsl(${Math.random() * 360}, 70%, 60%)`
+      });
+    }
+  }
+
+  // Inject current user
+  let myName = appState.settings && appState.settings.anonymousLeaderboard ? "익명 학생" : "학생 (나)";
+  const myEntry = { name: myName, xp: appState.xp, isMe: true, avatarColor: 'var(--color-macaw)' };
+  
+  const fullBoard = [...appState.leaderboardData.filter(u => !u.isMe), myEntry];
+  fullBoard.sort((a, b) => b.xp - a.xp);
+
+  listContainer.innerHTML = '';
+  
+  fullBoard.forEach((user, index) => {
+    const isPromotion = index < 10;
+    const isDemotion = index >= 25;
+    
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.padding = '16px';
+    row.style.borderRadius = '16px';
+    row.style.marginBottom = '8px';
+    
+    if (user.isMe) {
+      row.style.backgroundColor = 'var(--color-feather)';
+    } else {
+      row.style.backgroundColor = 'white';
+    }
+
+    let rankColor = 'var(--color-wolf)';
+    if (index === 0) rankColor = '#fcd34d'; // Gold
+    else if (index === 1) rankColor = '#9ca3af'; // Silver
+    else if (index === 2) rankColor = '#b45309'; // Bronze
+
+    if (isPromotion) row.style.borderLeft = '4px solid var(--color-turtle)';
+    else if (isDemotion) row.style.borderLeft = '4px solid var(--color-cardinal)';
+    else row.style.borderLeft = '4px solid transparent';
+
+    row.innerHTML = `
+      <div style="width: 30px; font-weight: 800; color: ${rankColor}; font-size: 18px; text-align: center;">${index + 1}</div>
+      <div style="width: 48px; height: 48px; border-radius: 50%; background-color: ${user.avatarColor}; margin: 0 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
+        ${user.name.charAt(0)}
+      </div>
+      <div style="flex: 1; font-weight: 700; color: var(--color-eel); font-size: 17px;">${user.name}</div>
+      <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">${user.xp} XP</div>
+    `;
+    listContainer.appendChild(row);
+  });
+}
+
+function renderQuestsTab() {
+  const qContainer = document.getElementById('quests-list-full');
+  if (!qContainer) return;
+
+  const q1Progress = Math.min(10, appState.dailyQuests.xpGainedToday);
+  const q2Progress = Math.min(2, appState.dailyQuests.consecutive10CountToday);
+  const q3Progress = Math.min(3, appState.dailyQuests.lessonsCompletedToday);
+
+  const quests = [
+    { title: "10 XP 획득하기", progress: q1Progress, total: 10, icon: 'zap', color: 'var(--color-macaw)' },
+    { title: "레슨에서 10연속 정답 달성하기", progress: q2Progress, total: 2, icon: 'target', color: 'var(--color-fox)' },
+    { title: "레슨 3개 완료하기", progress: q3Progress, total: 3, icon: 'book-open', color: 'var(--color-turtle)' }
+  ];
+
+  qContainer.innerHTML = '';
+  quests.forEach(q => {
+    const isDone = q.progress >= q.total;
+    const pct = (q.progress / q.total) * 100;
+    
+    qContainer.innerHTML += `
+      <div class="shop-item" style="display: flex; align-items: center; gap: 16px; opacity: ${isDone ? '0.6' : '1'};">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: ${isDone ? 'var(--color-swan)' : 'white'}; border: 2px solid ${isDone ? 'var(--color-swan)' : q.color}; display: flex; align-items: center; justify-content: center; color: ${isDone ? 'var(--color-wolf)' : q.color};">
+          <i data-lucide="${isDone ? 'check' : q.icon}" size="32"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 700; color: var(--color-eel); font-size: 17px; margin-bottom: 8px;">${q.title}</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${pct}%; background-color: ${q.color};"></div>
+          </div>
+          <div style="color: var(--color-wolf); font-size: 13px; font-weight: 700; margin-top: 4px;">${q.progress} / ${q.total}</div>
+        </div>
+        <div style="width: 50px; height: 50px;">
+          <img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg" style="width:100%; filter: ${isDone ? 'none' : 'grayscale(100%)'};"/>
+        </div>
+      </div>
+    `;
+  });
+  lucide.createIcons();
+}
+
+function renderProfileTab() {
+  document.getElementById('profile-xp').textContent = appState.xp;
+  document.getElementById('profile-streak').textContent = appState.streak;
+  
+  const achStreakFill = document.getElementById('ach-streak-fill');
+  const achStreakText = document.getElementById('ach-streak-text');
+  if (achStreakFill && achStreakText) {
+    const sPct = Math.min(100, (appState.streak / 3) * 100);
+    achStreakFill.style.width = `${sPct}%`;
+    achStreakText.textContent = `${Math.min(3, appState.streak)} / 3`;
   }
 }
