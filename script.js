@@ -610,8 +610,36 @@ const commonConcepts = {
     "mnemonic": "임시 정부 = 상하이에서 독립 운동을 지휘하던 최초의 '민주 공화제' 임시 정부",
     "misconception": "임시 정부는 왕정을 복고하려는 목표를 세웠다 (X, 군주제를 버리고 주권이 국민에게 있는 '민주 공화제'를 헌법 조항 제1조로 천명하였습니다)",
     "explanation": "국내외 독립 운동 단체를 연결하고 외교적 노력을 벌이며 광복군을 창설하는 등 대한민국의 법통이 된 조직입니다."
+  },
+  "원소 기호": {
+    "term": "원소 기호",
+    "definition": "원소를 나타내기 위해 사용하는 알파벳 기호로, 첫 글자는 대문자로, 다음 글자는 소문자로 나타냄",
+    "mnemonic": "원소 기호 = 원소들의 세계 공통 '이름표'!",
+    "misconception": "원소 기호의 두 번째 글자도 대문자로 쓴다 (X, 원소 기호의 첫 글자는 항상 대문자로 쓰고, 그 다음 글자는 소문자로 써야 다른 원소와 구분이 가능합니다)",
+    "explanation": "베르셀리우스가 제안한 방식으로 수소는 H, 산소는 O, 구리는 Cu 등 전 세계 공통 약속으로 사용합니다."
+  },
+  "분자": {
+    "term": "분자",
+    "definition": "독립된 입자로 존재하여 물질의 성질을 나타내는 가장 작은 입자",
+    "mnemonic": "분자 = 물질의 성질을 가진 '분'리된 '자'립 입자!",
+    "misconception": "분자가 쪼개져도 물질의 성질은 그대로 유지된다 (X, 분자가 더 작은 원자로 쪼개지면 물질 고유의 성질을 잃어버리게 됩니다)",
+    "explanation": "원자들이 화학 결합을 통해 형성하며, 결합하는 원자의 종류와 수에 따라 물질의 고유한 성질이 결정됩니다."
+  },
+  "불꽃 반응": {
+    "term": "불꽃 반응",
+    "definition": "일부 금속 원소나 그 원소를 포함한 물질을 겉불꽃에 넣었을 때 특유의 불꽃색이 나타나는 현상",
+    "mnemonic": "불꽃 반응 = 금속 원소들의 화려한 '불꽃' 장기자랑색!",
+    "misconception": "모든 화학 원소는 불꽃 반응으로 구별할 수 있다 (X, 주로 일부 금속 원소들만 불꽃 반응을 보이며, 리튬과 스트론튬처럼 불꽃색이 비슷한 경우 구별이 어렵습니다)",
+    "explanation": "쉽고 간단하게 물질 속 금속 원소를 확인할 수 있는 방법으로 나트륨은 노란색, 구리는 청록색 등을 띱니다."
+  },
+  "앙금 생성 반응": {
+    "term": "앙금 생성 반응",
+    "definition": "서로 다른 두 수용액을 섞었을 때, 양이온과 음이온이 반응하여 물에 녹지 않는 앙금을 생성하는 반응",
+    "mnemonic": "앙금 생성 = 이온들이 만나 물 밑에 '앙'하고 쌓이는 고체!",
+    "misconception": "모든 이온 수용액을 섞으면 항상 앙금이 형성된다 (X, 특정한 양이온(예: 은 이온)과 음이온(예: 염화 이온)이 결합해야만 물에 녹지 않는 앙금이 생깁니다)",
+    "explanation": "수용액 속 미지 이온의 종류를 검출할 때 유용하며, 대표적으로 염화 은(흰색), 아이오딘화 납(노란색) 등이 있습니다."
   }
-};
+};;
 
 
 const publisherCurriculum = {
@@ -829,7 +857,11 @@ const publisherCurriculum = {
       "1. 물질의 구성": [
         "원소",
         "원자",
-        "이온"
+        "이온",
+        "원소 기호",
+        "분자",
+        "불꽃 반응",
+        "앙금 생성 반응"
       ],
       "2. 전기와 자기": [
         "마찰전기",
@@ -870,7 +902,11 @@ const publisherCurriculum = {
       "1. 물질의 구성": [
         "원소",
         "원자",
-        "이온"
+        "이온",
+        "원소 기호",
+        "분자",
+        "불꽃 반응",
+        "앙금 생성 반응"
       ],
       "2. 전기와 자기": [
         "마찰전기",
@@ -911,7 +947,11 @@ const publisherCurriculum = {
       "I. 물질의 구성": [
         "원소",
         "원자",
-        "이온"
+        "이온",
+        "원소 기호",
+        "분자",
+        "불꽃 반응",
+        "앙금 생성 반응"
       ],
       "II. 전기와 자기": [
         "마찰전기",
@@ -952,7 +992,11 @@ const publisherCurriculum = {
       "1단원. 물질의 구성": [
         "원소",
         "원자",
-        "이온"
+        "이온",
+        "원소 기호",
+        "분자",
+        "불꽃 반응",
+        "앙금 생성 반응"
       ],
       "2단원. 전기와 자기": [
         "마찰전기",
@@ -993,7 +1037,11 @@ const publisherCurriculum = {
       "I. 물질의 구성": [
         "원소",
         "원자",
-        "이온"
+        "이온",
+        "원소 기호",
+        "분자",
+        "불꽃 반응",
+        "앙금 생성 반응"
       ],
       "II. 전기와 자기": [
         "마찰전기",
@@ -2237,6 +2285,8 @@ function generateLessonData(nodeIndex) {
   if (difficulty > 3) difficulty = 3;
   const optionCount = 4; // User requested 4 options always
 
+  const generatedPairs = new Set();
+
   // Generate 10 questions per lesson
   for (let i = 0; i < 10; i++) {
     const concept = concepts[i % concepts.length];
@@ -2253,7 +2303,22 @@ function generateLessonData(nodeIndex) {
       availableTypes = [4, 5, 6]; // Master: Exclusively applied types (Comparative analysis, Misconception analysis, Scenario debates)
     }
     
-    let qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    // De-duplication logic: select a qType that hasn't been paired with this concept yet in this lesson
+    let qType = null;
+    const shuffledTypes = [...availableTypes].sort(() => Math.random() - 0.5);
+    for (const t of shuffledTypes) {
+      const pairKey = `${concept.term}|${t}`;
+      if (!generatedPairs.has(pairKey)) {
+        qType = t;
+        generatedPairs.add(pairKey);
+        break;
+      }
+    }
+    // Fallback if all options are exhausted
+    if (qType === null) {
+      qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+      generatedPairs.add(`${concept.term}|${qType}`);
+    }
     
     let questionText = "";
     let options = [];
