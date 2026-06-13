@@ -1873,20 +1873,25 @@ if ('speechSynthesis' in window) {
 function playSound(text) {
   if (!text) return;
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); // stop current sound
+    window.speechSynthesis.cancel(); 
     
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // Check if English or Korean
-    const hasEnglish = /[a-zA-Z]/.test(text);
+    const hasEnglish = /[a-zA-Z]/.test(text) && !text.includes("맞다") && !text.includes("틀리다");
     if (hasEnglish) {
       utterance.lang = 'en-US';
       if (englishVoice) utterance.voice = englishVoice;
       utterance.rate = 0.95;
     } else {
       utterance.lang = 'ko-KR';
-      if (koreanVoice) utterance.voice = koreanVoice;
-      utterance.rate = 0.9; // 또박또박 발음
+      // If it's an OX option, user wants '기본 목소리' (default voice), so we bypass 'koreanVoice' custom selection
+      if (text.includes("맞다 (O)") || text.includes("틀리다 (X)")) {
+        // Leave voice as default system voice
+        utterance.rate = 1.0;
+      } else {
+        if (koreanVoice) utterance.voice = koreanVoice;
+        utterance.rate = 0.9; 
+      }
     }
     
     utterance.pitch = 1.0;
@@ -2165,7 +2170,7 @@ function generateLessonData(nodeIndex) {
   // Phase 0: diff 0, Phase 1: diff 1, Phase 2: diff 2, Phase 3+: diff 3
   let difficulty = Math.floor((nodeIndex / totalNodes) * 4);
   if (difficulty > 3) difficulty = 3;
-  const optionCount = difficulty === 0 ? 2 : (difficulty === 1 ? 3 : 4);
+  const optionCount = 4; // User requested 4 options always
 
   // Generate 15 questions per lesson
   for (let i = 0; i < 15; i++) {
@@ -2528,41 +2533,39 @@ function closeLesson() {
 }
 
 function finishLesson() {
-  // Update state
   const xpEarned = 15;
-  appState.xp += xpEarned; // 15 XP per study node
+  appState.xp += xpEarned; 
   
   const progressKey = `${appState.selectedSubject}|${appState.selectedPublisher}|${appState.selectedUnit}`;
   const currentProgress = appState.progress[progressKey] !== undefined ? appState.progress[progressKey] : 0;
+  
+  const totalNodes = getTotalNodesForUnit(appState.selectedSubject, appState.selectedPublisher, appState.selectedUnit);
 
-  // If they completed the active node, increment major unit progress!
   if (activeLessonIndex === currentProgress) {
-    if (currentProgress < 35) {
+    if (currentProgress < totalNodes) {
       appState.progress[progressKey] = currentProgress + 1;
     }
   }
 
   appState.streak = Math.max(1, appState.streak + 1);
 
-  // --- Daily Quest Tracking ---
   appState.dailyQuests.lessonsCompletedToday += 1;
   appState.dailyQuests.xpGainedToday += xpEarned;
   if (lessonConsecutive10Achieved) {
     appState.dailyQuests.consecutive10CountToday += 1;
   }
   
-  // Magic Box Boost Check
   if (appState.inventory.magicBoxExpiry > Date.now()) {
-    appState.gems += 25; // Bonus gems
-    alert(`마법상자 버프 작동중! 추가 보석 +25개를 획득했습니다.`);
+    appState.gems += 25; 
+    alert(`마법 상자 발동! 추가 보석 +25를 획득했습니다.`);
   }
 
   saveState();
-  checkDailyQuests(); // Check if they unlocked any new chest
-  updateDailyQuestsUI(); // Update UI progress bars
+  updateDailyQuestsUI();
   
-  alert(`학습 완료! +15 XP 획득! (현재 스트릭: ${appState.streak}일)`);
-  closeLesson();
+  document.getElementById('lesson-view').style.display = 'none';
+  document.getElementById('dashboard-view').style.display = 'flex';
+  renderDashboard();
 }
 
 // ============================================================================
