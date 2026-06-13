@@ -2531,6 +2531,11 @@ function checkAnswer() {
     options[selectedOptionIndex].classList.add('correct');
     options[selectedOptionIndex].classList.remove('selected');
 
+    if (currentQ.isReview) {
+      appState.incorrectNotes = appState.incorrectNotes.filter(n => n.question !== currentQ.question);
+      saveState();
+    }
+
     footer.classList.add('correct-state');
     
     currentLessonStreak++;
