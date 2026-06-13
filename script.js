@@ -1694,6 +1694,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Anonymous Leaderboard Setup
+  const anonymousToggle = document.getElementById('anonymous-mode-toggle');
+  if (anonymousToggle) {
+    anonymousToggle.checked = appState.settings.anonymousLeaderboard;
+    anonymousToggle.addEventListener('change', (e) => {
+      appState.settings.anonymousLeaderboard = e.target.checked;
+      saveState();
+    });
+  }
+
   // Quick Start Button
   const quickStartBtn = document.getElementById('quick-start-btn');
   if (quickStartBtn) {
