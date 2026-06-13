@@ -2396,13 +2396,46 @@ function startLesson(nodeIndex) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
-  if (appState.hearts <= 0) {
-    alert("하트가 부족합니다! 보석으로 상점에서 충전하거나 나중에 다시 도전해 주세요.");
-    return;
-  }
 
   activeLessonIndex = nodeIndex;
   currentLessonData = generateLessonData(nodeIndex);
+  currentQuestionIndex = 0;
+  isAnswerChecked = false;
+  selectedOptionIndex = null;
+  currentLessonStreak = 0;
+  lessonConsecutive10Achieved = false;
+
+  document.getElementById('dashboard-view').style.display = 'none';
+  document.getElementById('lesson-view').style.display = 'flex';
+
+  renderQuestion();
+}
+
+function startReviewLesson() {
+  if (appState.incorrectNotes.length === 0) return;
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  // Shuffle and pick up to 5
+  const shuffled = [...appState.incorrectNotes].sort(() => Math.random() - 0.5);
+  const reviewSet = shuffled.slice(0, 5);
+
+  currentLessonData = reviewSet.map(note => ({
+    question: note.question,
+    options: note.options,
+    answer: note.answer,
+    typeLabel: "오답 복습",
+    targetTerm: "복습", 
+    concept: {
+      desc: note.conceptDesc,
+      mnemonic: note.conceptMnemonic
+    },
+    isReview: true
+  }));
+
+  activeLessonIndex = -1; // Mark as review lesson so progress isn't updated
   currentQuestionIndex = 0;
   isAnswerChecked = false;
   selectedOptionIndex = null;
