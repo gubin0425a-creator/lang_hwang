@@ -2627,13 +2627,7 @@ function setupNavigation() {
     }
   });
 
-  navShop.addEventListener('click', (e) => {
-    e.preventDefault();
-    navShop.classList.add('active');
-    navLearning.classList.remove('active');
-    mainShopView.style.display = 'block';
-    mainLearningView.style.display = 'none';
-  });
+
 }
 
 function setupShop() {
