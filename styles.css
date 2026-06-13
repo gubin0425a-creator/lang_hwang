@@ -1,41 +1,40 @@
 /* Reset & Global Styles */
 :root {
   /* Futuristic Dark Theme Color Palette */
-  --color-bg-base: #0a0d16;        /* Deep space obsidian black */
-  --color-bg-surface: #111827;     /* Dark obsidian gray card background */
-  --color-bg-overlay: rgba(17, 24, 39, 0.75); /* Translucent glass background */
+  --color-mind-base: #030508;        /* Ultra black slate space-background */
+  --color-mind-surface: #0a0d14;     /* Deep Onyx card background */
+  --color-mind-overlay: rgba(10, 13, 20, 0.85); /* Translucent glass background */
   
   /* Brand gradients */
-  --color-primary-start: #6366f1;  /* Cyber Indigo */
-  --color-primary-end: #a855f7;    /* Quantum Amethyst */
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-secondary: #10b981;      /* Emerald success */
-  --color-secondary-hover: #059669;
+  --color-accent-mint-start: #00ffbc;  /* Aurora Neon Mint */
+  --color-accent-teal-end: #bd53ff;    /* Holographic Laser Purple */
+  --color-accent-mint: #00ffbc;
+  --color-accent-mint-hover: #00e095;
+  --color-success-green: #00ffbc;      /* Mint success */
+  --color-success-green-hover: #00e095;
   
   /* Neon Functional Colors */
-  --color-macaw: #06b6d4;          /* Cyber Cyan (Crystal/Points) */
-  --color-macaw-hover: #0891b2;
-  --color-cardinal: #f43f5e;        /* Rose Red (Energy/Hearts) */
-  --color-fox: #f97316;             /* Solar Orange (Streak) */
-  --color-bee: #fbbf24;             /* Amber Gold */
+  --color-cyber-mint: #00ffbc;          /* Quantum/Points */
+  --color-cyber-mint-hover: #00e095;
+  --color-battery-coral: #ff4d5a;        /* Sync Battery life (Coral Red) */
+  --color-streak-amber: #ff9900;             /* Solar Orange (Streak) */
+  --color-charge-gold: #ffcc00;             /* Amber Gold */
   
   /* Text and Borders */
-  --color-eel: #f8fafc;             /* High contrast silver-white text */
-  --color-wolf: #94a3b8;            /* Slate secondary text */
-  --color-hare: #64748b;            /* Dark slate muted text */
-  --color-swan: rgba(255, 255, 255, 0.08);  /* Glassmorphic border */
-  --color-polar: rgba(255, 255, 255, 0.04); /* Glass hover overlay */
-  --color-snow: #0a0d16;            /* Same as base background */
+  --color-text-luminous: #ffffff;             /* High contrast luminous white text */
+  --color-slate-gray: #94a3b8;            /* Slate secondary text */
+  --color-dark-slate: #475569;            /* Muted dark slate text */
+  --color-glass-border: rgba(0, 255, 188, 0.12);  /* Neon glass edge */
+  --color-glass-hover: rgba(189, 83, 255, 0.08); /* Violet glass hover overlay */
   
-  --color-active-bg: rgba(99, 102, 241, 0.12);
-  --color-active-border: rgba(99, 102, 241, 0.6);
+  --color-active-glass-bg: rgba(0, 255, 188, 0.08);
+  --color-active-glass-border: rgba(0, 255, 188, 0.4);
   
-  --color-feather: rgba(99, 102, 241, 0.15);
-  --color-turtle: #10b981;
+  --color-glass-highlight: rgba(0, 255, 188, 0.15);
+  --color-brand-success: #00ffbc;
   --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  --neon-indigo-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  --neon-indigo-shadow: 0 0 15px rgba(0, 255, 188, 0.4);
 }
 
 * {
@@ -46,12 +45,12 @@
 
 body {
   font-family: var(--font-family);
-  background-color: var(--color-bg-base);
+  background-color: var(--color-mind-base);
   background-image: 
-    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 10% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 45%);
+    radial-gradient(circle at 80% 20%, rgba(0, 255, 188, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, rgba(189, 83, 255, 0.08) 0%, transparent 45%);
   background-attachment: fixed;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -82,7 +81,7 @@ button {
 .sidebar {
   width: 256px;
   padding: 32px 16px;
-  border-right: 1.5px solid var(--color-swan);
+  border-right: 1.5px solid var(--color-glass-border);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -102,7 +101,7 @@ button {
 }
 
 .logo-text {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(135deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 24px;
@@ -125,7 +124,7 @@ button {
   border-radius: 14px;
   font-size: 15px;
   font-weight: 800;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   letter-spacing: 0.5px;
   transition: all 0.25s ease;
   border: 1.5px solid transparent;
@@ -140,19 +139,19 @@ button {
 }
 
 .nav-links li a:hover {
-  background-color: var(--color-polar);
-  color: var(--color-eel);
+  background-color: var(--color-glass-hover);
+  color: var(--color-text-luminous);
   border-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav-links li a:hover .nav-icon {
   transform: scale(1.1) rotate(5deg);
-  color: var(--color-primary-end);
+  color: var(--color-accent-teal-end);
 }
 
 .nav-links li.active a {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   border: 1.5px solid rgba(99, 102, 241, 0.4);
   box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
 }
@@ -240,7 +239,7 @@ button {
 .unit-info p {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
 }
 
 .guidebook-btn {
@@ -264,7 +263,7 @@ button {
 }
 
 .guidebook-btn.active {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(135deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   color: white;
   border-color: transparent;
   box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
@@ -316,7 +315,7 @@ button {
   font-size: 13px;
   line-height: 1.6;
   margin-bottom: 6px;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
 }
 
 .expanded-mnemonic {
@@ -403,7 +402,7 @@ button {
 }
 
 .node-container.active .lesson-node {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(135deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   color: white;
   animation: nodePulse 2.5s infinite ease-in-out;
 }
@@ -431,7 +430,7 @@ button {
 /* Locked Node Styling (Frosted Gray Glass Hexagon) */
 .node-container.locked .lesson-node {
   background-color: rgba(255, 255, 255, 0.08);
-  color: var(--color-hare);
+  color: var(--color-dark-slate);
   cursor: not-allowed;
 }
 
@@ -510,7 +509,7 @@ button {
   overflow-y: auto;
   background-color: rgba(10, 13, 22, 0.8);
   backdrop-filter: blur(20px);
-  border-left: 1.5px solid var(--color-swan);
+  border-left: 1.5px solid var(--color-glass-border);
 }
 
 .stats-bar {
@@ -529,7 +528,7 @@ button {
   padding: 8px 12px;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.02);
-  border: 1.5px solid var(--color-swan);
+  border: 1.5px solid var(--color-glass-border);
   transition: all 0.2s ease;
 }
 
@@ -555,12 +554,12 @@ button {
   transform: translateY(-1px);
 }
 
-.stat-item.streak { color: var(--color-fox); }
-.stat-item.gems { color: var(--color-macaw); }
-.stat-item.hearts { color: var(--color-cardinal); }
+.stat-item.streak { color: var(--color-streak-amber); }
+.stat-item.gems { color: var(--color-cyber-mint); }
+.stat-item.hearts { color: var(--color-battery-coral); }
 
 .card {
-  border: 1.5px solid var(--color-swan);
+  border: 1.5px solid var(--color-glass-border);
   border-radius: 20px;
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.02);
@@ -570,7 +569,7 @@ button {
   font-size: 15px;
   font-weight: 800;
   margin-bottom: 16px;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   letter-spacing: 0.3px;
 }
 
@@ -582,7 +581,7 @@ button {
 
 .league-card p {
   font-size: 13.5px;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   font-weight: 600;
   line-height: 1.5;
 }
@@ -599,7 +598,7 @@ button {
 }
 
 .view-all {
-  color: var(--color-primary-end);
+  color: var(--color-accent-teal-end);
   font-weight: 800;
   font-size: 13px;
 }
@@ -633,7 +632,7 @@ button {
 .quest-details h4 {
   font-size: 13.5px;
   font-weight: 800;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   margin-bottom: 8px;
 }
 
@@ -647,7 +646,7 @@ button {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(90deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   border-radius: 6px;
   transition: width 0.3s ease;
 }
@@ -656,19 +655,19 @@ button {
   margin-top: auto;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-hare);
+  color: var(--color-dark-slate);
   line-height: 1.8;
   padding-top: 20px;
-  border-top: 1.5px solid var(--color-swan);
+  border-top: 1.5px solid var(--color-glass-border);
 }
 
 .footer-links a {
-  color: var(--color-hare);
+  color: var(--color-dark-slate);
   transition: color 0.2s;
 }
 
 .footer-links a:hover {
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
 }
 
 /* Animations */
@@ -710,7 +709,7 @@ button {
 
 .modal-header {
   padding: 20px 24px;
-  border-bottom: 1.5px solid var(--color-swan);
+  border-bottom: 1.5px solid var(--color-glass-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -719,18 +718,18 @@ button {
 .modal-header h2 {
   font-size: 18px;
   font-weight: 800;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   letter-spacing: -0.3px;
 }
 
 .close-modal-btn {
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .close-modal-btn:hover {
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
 }
 
 .modal-body {
@@ -738,7 +737,7 @@ button {
   overflow-y: auto;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
 }
 
 /* Modal Selector Group */
@@ -752,7 +751,7 @@ button {
 .modal-selector-group label {
   font-size: 12px;
   font-weight: 800;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -762,9 +761,9 @@ button {
   font-family: var(--font-family);
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   background-color: rgba(255, 255, 255, 0.02);
-  border: 1.5px solid var(--color-swan);
+  border: 1.5px solid var(--color-glass-border);
   border-radius: 12px;
   padding: 12px;
   outline: none;
@@ -774,7 +773,7 @@ button {
 
 .modal-dropdown option {
   background-color: #111827;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
 }
 
 .modal-dropdown:hover {
@@ -783,13 +782,13 @@ button {
 }
 
 .modal-dropdown:focus {
-  border-color: var(--color-primary);
+  border-color: var(--color-accent-mint);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
 .apply-btn {
   width: 100%;
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(135deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   color: white;
   font-size: 15px;
   font-weight: 800;
@@ -817,31 +816,59 @@ button {
   to { opacity: 1; }
 }
 
-/* Lesson View Styles (Full Immersive Brain Training Lab) */
+/* Lesson View Styles (Full Immersive Brain Training Lab - Central Card console) */
 .lesson-view {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #070a12;
+  background-color: var(--color-mind-base);
   background-image: 
-    radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
-    radial-gradient(circle at 50% 85%, rgba(244, 63, 94, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 50% 15%, rgba(0, 255, 188, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 85%, rgba(189, 83, 255, 0.06) 0%, transparent 40%);
   z-index: 1000;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.lesson-console-card {
+  background-color: var(--color-mind-surface);
+  border: 1.5px solid var(--color-glass-border);
+  border-radius: 28px;
+  padding: 32px;
+  max-width: 760px;
+  width: 100%;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px);
+  display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lesson-console-card.correct-state {
+  border-color: rgba(0, 255, 188, 0.4);
+  box-shadow: var(--glass-shadow), 0 0 30px rgba(0, 255, 188, 0.15);
+}
+
+.lesson-console-card.wrong-state {
+  border-color: rgba(255, 77, 90, 0.4);
+  box-shadow: var(--glass-shadow), 0 0 30px rgba(255, 77, 90, 0.15);
 }
 
 .lesson-header {
   display: flex;
   align-items: center;
-  padding: 16px 24px;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid var(--color-glass-border);
   gap: 16px;
-  max-width: 800px;
   width: 100%;
-  margin: 0 auto;
+  margin-bottom: 24px;
 }
 
 .close-btn {
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   transition: color 0.2s;
   display: flex;
   align-items: center;
@@ -849,7 +876,7 @@ button {
 }
 
 .close-btn:hover {
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
 }
 
 .lesson-progress-bar {
@@ -863,41 +890,36 @@ button {
 
 .lesson-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary-start), var(--color-primary-end));
+  background: linear-gradient(90deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
   border-radius: 6px;
   transition: width 0.3s ease;
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 188, 0.4);
 }
 
 .lesson-content {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
-  max-width: 560px;
-  margin: 0 auto;
-  width: 100%;
 }
 
 .lesson-type-badge {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
-  color: #c084fc;
+  background: linear-gradient(135deg, rgba(0, 255, 188, 0.1), rgba(189, 83, 255, 0.1));
+  color: #00ffbc;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   margin-bottom: 12px;
-  border: 1.5px solid rgba(168, 85, 247, 0.3);
+  border: 1.5px solid rgba(0, 255, 188, 0.3);
   letter-spacing: 0.5px;
 }
 
 #question-text {
   font-size: 22px;
   font-weight: 800;
-  color: var(--color-eel);
+  color: var(--color-text-luminous);
   margin-bottom: 28px;
   text-align: center;
   white-space: pre-line;
@@ -905,74 +927,79 @@ button {
 }
 
 .options-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
   width: 100%;
 }
 
 .option-btn {
-  border: 1.5px solid var(--color-swan);
-  border-radius: 18px;
-  padding: 16px 20px;
+  border: 1.5px solid var(--color-glass-border);
+  border-left: 4px solid var(--color-glass-border);
+  border-radius: 14px;
+  padding: 18px 20px;
   font-size: 15.5px;
   font-weight: 700;
-  color: var(--color-wolf);
+  color: var(--color-slate-gray);
   background-color: rgba(255, 255, 255, 0.02);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
 }
 
 .option-btn:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: var(--color-eel);
+  background-color: var(--color-glass-hover);
+  border-color: rgba(0, 255, 188, 0.2);
+  border-left-color: var(--color-accent-mint);
+  color: var(--color-text-luminous);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 255, 188, 0.1);
 }
 
 .option-btn.selected {
-  border-color: rgba(99, 102, 241, 0.6);
-  background-color: rgba(99, 102, 241, 0.12);
-  color: var(--color-eel);
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+  border-color: var(--color-active-glass-border);
+  border-left-color: var(--color-accent-mint);
+  background-color: var(--color-active-glass-bg);
+  color: var(--color-text-luminous);
+  box-shadow: 0 0 15px rgba(0, 255, 188, 0.15);
 }
 
 .option-btn.correct {
-  border-color: #10b981;
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #34d399;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  border-color: var(--color-brand-success);
+  border-left-color: var(--color-brand-success);
+  background-color: rgba(0, 255, 188, 0.1);
+  color: var(--color-brand-success);
+  box-shadow: 0 0 15px rgba(0, 255, 188, 0.15);
 }
 
 .option-btn.wrong {
-  border-color: #f43f5e;
-  background-color: rgba(244, 63, 94, 0.1);
-  color: #fb7185;
-  box-shadow: 0 0 15px rgba(244, 63, 94, 0.15);
+  border-color: var(--color-battery-coral);
+  border-left-color: var(--color-battery-coral);
+  background-color: rgba(255, 77, 90, 0.1);
+  color: #ff7380;
+  box-shadow: 0 0 15px rgba(255, 77, 90, 0.15);
 }
 
 /* Floating Glassmorphic Footer Result Window */
 .lesson-footer {
-  border-top: 1.5px solid var(--color-swan);
-  padding: 24px;
+  border-top: 1.5px solid var(--color-glass-border);
+  padding: 24px 0 0 0;
+  margin-top: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(11, 15, 25, 0.95);
-  backdrop-filter: blur(12px);
+  background-color: transparent;
+  backdrop-filter: none;
   transition: all 0.3s ease;
   z-index: 10;
+  width: 100%;
 }
 
 .lesson-footer.correct-state {
-  border-top-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 -10px 30px rgba(16, 185, 129, 0.12);
+  border-top-color: rgba(0, 255, 188, 0.3);
 }
 
 .lesson-footer.wrong-state {
-  border-top-color: rgba(244, 63, 94, 0.3);
-  box-shadow: 0 -10px 30px rgba(244, 63, 94, 0.12);
+  border-top-color: rgba(255, 77, 90, 0.3);
 }
 
 .feedback-message {
@@ -983,42 +1010,44 @@ button {
   gap: 12px;
 }
 
-.feedback-message.correct-text { color: #34d399; }
-.feedback-message.wrong-text { color: #fb7185; }
+.feedback-message.correct-text { color: #00ffbc; }
+.feedback-message.wrong-text { color: #ff7380; }
 
 .check-btn {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
-  color: white;
-  font-size: 15px;
+  background: linear-gradient(135deg, var(--color-accent-mint-start), var(--color-accent-teal-end));
+  color: var(--color-mind-base);
+  font-size: 16px;
   font-weight: 800;
-  padding: 12px 28px;
-  border-radius: 16px;
+  padding: 14px 32px;
+  border-radius: 30px;
   letter-spacing: 0.5px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 255, 188, 0.25);
+  min-width: 140px;
+  text-align: center;
 }
 
 .check-btn:disabled {
   background: rgba(255, 255, 255, 0.05);
-  color: var(--color-hare);
+  color: var(--color-dark-slate);
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .check-btn:not(:disabled):hover {
   filter: brightness(1.1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 255, 188, 0.4);
 }
 
 .check-btn:not(:disabled):active {
   transform: translateY(2px);
-  box-shadow: 0 2px 6px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 255, 188, 0.2);
 }
 
 .check-btn.wrong-btn {
-  background: linear-gradient(135deg, #f43f5e, #e11d48);
-  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+  background: linear-gradient(135deg, var(--color-battery-coral), #ff7380);
+  box-shadow: 0 4px 15px rgba(255, 77, 90, 0.25);
 }
 
 .sound-btn {
@@ -1078,7 +1107,7 @@ button {
     flex-direction: row;
     padding: 0;
     border-right: none;
-    border-top: 1.5px solid var(--color-swan);
+    border-top: 1.5px solid var(--color-glass-border);
     background: rgba(10, 13, 22, 0.95);
     z-index: 100;
     backdrop-filter: blur(12px);
@@ -1133,11 +1162,23 @@ button {
 
 /* Mobile Portrait Phone Optimization */
 @media (max-width: 480px) {
+  .lesson-view {
+    padding: 10px;
+  }
+  .lesson-console-card {
+    padding: 20px;
+    border-radius: 20px;
+    width: 100%;
+  }
+  .options-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
   .lesson-footer {
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
-    padding: 16px;
+    padding: 16px 0 0 0;
   }
   .check-btn {
     width: 100%;
@@ -1150,7 +1191,7 @@ button {
     text-align: center;
   }
   .lesson-content {
-    padding: 16px;
+    padding: 0;
     width: 100%;
   }
   #question-text {
@@ -1162,7 +1203,7 @@ button {
     font-size: 14px;
   }
   .lesson-header {
-    padding: 12px 16px;
+    padding: 0 0 12px 0;
   }
   .quick-actions {
     flex-direction: column;
@@ -1209,7 +1250,7 @@ button {
 #leaderboard-list > div {
   transition: transform 0.2s, box-shadow 0.2s;
   background-color: rgba(255, 255, 255, 0.02);
-  border: 1.5px solid var(--color-swan) !important;
+  border: 1.5px solid var(--color-glass-border) !important;
 }
 
 #leaderboard-list > div:hover {
@@ -1222,7 +1263,7 @@ button {
 .stat-card {
   transition: transform 0.2s, box-shadow 0.2s;
   background-color: rgba(255, 255, 255, 0.02) !important;
-  border-color: var(--color-swan) !important;
+  border-color: var(--color-glass-border) !important;
 }
 
 .stat-card:hover {

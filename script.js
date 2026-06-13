@@ -1691,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (reviewNotesBtn) {
     reviewNotesBtn.addEventListener('click', () => {
       if (appState.incorrectNotes.length === 0) {
-        alert("아직 오답노트에 저장된 문제가 없습니다. 먼저 학습을 진행해 주세요!");
+        alert("아직 디버그 로그에 저장된 시스템 오류가 없습니다. 시뮬레이션을 완료해 주세요!");
         return;
       }
       startReviewLesson();
@@ -2321,7 +2321,7 @@ function startReviewLesson() {
     question: note.question,
     options: note.options,
     answer: note.answer,
-    typeLabel: "오답 복습",
+    typeLabel: "디버그 모드",
     targetTerm: "복습", 
     concept: {
       desc: note.conceptDesc,
@@ -2421,6 +2421,7 @@ function checkAnswer() {
   const footer = document.getElementById('lesson-footer');
   const checkBtn = document.getElementById('check-btn');
   const feedbackMsg = document.getElementById('feedback-message');
+  const consoleCard = document.getElementById('lesson-console-card');
 
   if (isCorrect) {
     options[selectedOptionIndex].classList.add('correct');
@@ -2432,6 +2433,7 @@ function checkAnswer() {
     }
 
     footer.classList.add('correct-state');
+    if (consoleCard) consoleCard.classList.add('correct-state');
     
     currentLessonStreak++;
     if (currentLessonStreak >= 10) {
@@ -2448,10 +2450,10 @@ function checkAnswer() {
     }
 
     if (streakRecovered) {
-      feedbackMsg.innerHTML = `<i data-lucide="heart" size="32" fill="currentColor" style="color: var(--color-cardinal);"></i> 정답! ${currentLessonStreak}연속 정답으로 에너지 1개 회복! 💖`;
-      playSound("에너지가 회복되었습니다");
+      feedbackMsg.innerHTML = `<i data-lucide="zap" size="32" fill="currentColor" style="color: var(--color-accent-mint);"></i> 정답! ${currentLessonStreak}연속 매칭으로 싱크 배터리 1개 복구! ⚡`;
+      playSound("배터리가 충전되었습니다");
     } else {
-      feedbackMsg.innerHTML = `<i data-lucide="check-circle" size="32"></i> 정답입니다! (${currentLessonStreak}연속 정답 🔥)`;
+      feedbackMsg.innerHTML = `<i data-lucide="check-circle" size="32"></i> 싱크 매칭 성공! (${currentLessonStreak}연속 매칭 🔥)`;
       playSound("정답");
     }
     feedbackMsg.className = 'feedback-message correct-text';
@@ -2463,6 +2465,7 @@ function checkAnswer() {
     options[currentQ.answer].classList.add('correct');
 
     footer.classList.add('wrong-state');
+    if (consoleCard) consoleCard.classList.add('wrong-state');
     
         // Save to incorrect notes
     if (currentQ.concept) {
@@ -2486,7 +2489,7 @@ function checkAnswer() {
     // Show mnemonic feedback
     let feedbackHTML = `<div style="display:flex; flex-direction:column; gap:8px;">
       <div style="display:flex; align-items:center; gap:8px; font-size:24px; font-weight:800;">
-        <i data-lucide="x-circle" size="32"></i> 오답입니다.
+        <i data-lucide="x-circle" size="32"></i> 싱크 에러 발생.
       </div>`;
     if (currentQ.concept) {
       feedbackHTML += `
@@ -2506,7 +2509,7 @@ function checkAnswer() {
     renderStats();
     saveState();
     
-      playSound("정답");
+      playSound("오답");
   }
 
   checkBtn.textContent = '계속하기';
@@ -2531,8 +2534,12 @@ function resetFooter() {
   const footer = document.getElementById('lesson-footer');
   const checkBtn = document.getElementById('check-btn');
   const feedbackMsg = document.getElementById('feedback-message');
+  const consoleCard = document.getElementById('lesson-console-card');
 
   footer.className = 'lesson-footer';
+  if (consoleCard) {
+    consoleCard.classList.remove('correct-state', 'wrong-state');
+  }
   feedbackMsg.innerHTML = '';
   feedbackMsg.className = 'feedback-message';
   
@@ -2636,7 +2643,7 @@ function setupShop() {
   if (buyHeartsBtn) {
     buyHeartsBtn.addEventListener('click', () => {
       if (appState.hearts >= 5) {
-        alert("이미 에너지가 가득 차 있습니다!");
+        alert("이미 싱크 배터리가 100% 충전 상태입니다!");
         return;
       }
       if (appState.gems >= 50) {
@@ -2644,9 +2651,9 @@ function setupShop() {
         appState.hearts = 5;
         saveState();
         renderStats();
-        alert("에너지가 가득 찼습니다!");
+        alert("싱크 배터리 충전 완료!");
       } else {
-        alert("크리스탈이 부족합니다!");
+        alert("퀀텀 코어가 부족합니다!");
       }
     });
   }
@@ -2654,7 +2661,7 @@ function setupShop() {
   if (buyFreezeBtn) {
     buyFreezeBtn.addEventListener('click', () => {
       if (appState.inventory.streakFreeze > 0) {
-        alert("이미 연속 학습 얼리기를 보유하고 있습니다!");
+        alert("이미 동기화 유지 쉴드를 보유하고 있습니다!");
         return;
       }
       if (appState.gems >= 200) {
@@ -2662,9 +2669,9 @@ function setupShop() {
         appState.inventory.streakFreeze = 1;
         saveState();
         renderStats();
-        alert("연속 학습 얼리기를 구매했습니다!");
+        alert("동기화 유지 쉴드를 구매했습니다!");
       } else {
-        alert("크리스탈이 부족합니다!");
+        alert("퀀텀 코어가 부족합니다!");
       }
     });
   }
@@ -2718,25 +2725,25 @@ function claimChestReward(chestLevel) {
 
   if (chestLevel === 1) {
     appState.gems += 5;
-    text.textContent = "에너지 코어 (크리스탈 5개)";
+    text.textContent = "싱크 에너지 코어 (퀀텀 코어 5개)";
     text.style.color = "#c28d58";
     icon.setAttribute('color', "#c28d58");
     icon.setAttribute('fill', "#c28d58");
-    desc.textContent = "첫 번째 일일 미션을 달성하여 크리스탈 5개를 획득했습니다!";
+    desc.textContent = "첫 번째 동기화 프로토콜을 수행하여 퀀텀 코어 5개를 획득했습니다!";
   } else if (chestLevel === 2) {
     appState.gems += 15;
-    text.textContent = "하이퍼 코어 (크리스탈 15개)";
+    text.textContent = "하이퍼 세이버 (퀀텀 코어 15개)";
     text.style.color = "#1cb0f6";
     icon.setAttribute('color', "#1cb0f6");
     icon.setAttribute('fill', "#1cb0f6");
-    desc.textContent = "두 번째 일일 미션을 달성하여 크리스탈 15개를 획득했습니다!";
+    desc.textContent = "두 번째 동기화 프로토콜을 수행하여 퀀텀 코어 15개를 획득했습니다!";
   } else if (chestLevel === 3) {
     appState.inventory.magicBoxNextDayEligible = true;
-    text.textContent = "퀀텀 코어 (내일 30분 버프)";
+    text.textContent = "오버차지 모듈 (내일 30분 버프)";
     text.style.color = "#ce82ff";
     icon.setAttribute('color', "#ce82ff");
     icon.setAttribute('fill', "#ce82ff");
-    desc.textContent = "모든 미션을 완수했습니다! 내일 앱 접속 시 30분 동안 트레이닝 당 크리스탈 25개가 추가 지급됩니다.";
+    desc.textContent = "모든 프로토콜을 완료했습니다! 내일 앱 접속 시 30분 동안 시뮬레이션 당 퀀텀 코어 25개가 추가 적립됩니다.";
   }
   
   saveState();
@@ -2773,7 +2780,7 @@ function renderLeaderboard() {
 
   // Inject current user
   let myName = appState.settings && appState.settings.anonymousLeaderboard ? "익명 학생" : "학생 (나)";
-  const myEntry = { name: myName, xp: appState.xp, isMe: true, avatarColor: 'var(--color-macaw)' };
+  const myEntry = { name: myName, xp: appState.xp, isMe: true, avatarColor: 'var(--color-cyber-mint)' };
   
   const fullBoard = [...appState.leaderboardData.filter(u => !u.isMe), myEntry];
   fullBoard.sort((a, b) => b.xp - a.xp);
@@ -2796,16 +2803,16 @@ function renderLeaderboard() {
       row.style.border = '1px solid rgba(99, 102, 241, 0.3)';
     } else {
       row.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
-      row.style.border = '1.5px solid var(--color-swan)';
+      row.style.border = '1.5px solid var(--color-glass-border)';
     }
 
-    let rankColor = 'var(--color-wolf)';
+    let rankColor = 'var(--color-slate-gray)';
     if (index === 0) rankColor = '#fcd34d'; // Gold
     else if (index === 1) rankColor = '#9ca3af'; // Silver
     else if (index === 2) rankColor = '#b45309'; // Bronze
 
-    if (isPromotion) row.style.borderLeft = '4px solid var(--color-turtle)';
-    else if (isDemotion) row.style.borderLeft = '4px solid var(--color-cardinal)';
+    if (isPromotion) row.style.borderLeft = '4px solid var(--color-brand-success)';
+    else if (isDemotion) row.style.borderLeft = '4px solid var(--color-battery-coral)';
     else row.style.borderLeft = '4px solid transparent';
 
     row.innerHTML = `
@@ -2813,8 +2820,8 @@ function renderLeaderboard() {
       <div style="width: 48px; height: 48px; border-radius: 50%; background-color: ${user.avatarColor}; margin: 0 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
         ${user.name.charAt(0)}
       </div>
-      <div style="flex: 1; font-weight: 700; color: var(--color-eel); font-size: 17px;">${user.name}</div>
-      <div style="font-weight: 700; color: var(--color-eel); font-size: 17px;">${user.xp} XP</div>
+      <div style="flex: 1; font-weight: 700; color: var(--color-text-luminous); font-size: 17px;">${user.name}</div>
+      <div style="font-weight: 700; color: var(--color-text-luminous); font-size: 17px;">${user.xp} XP</div>
     `;
     listContainer.appendChild(row);
   });
@@ -2829,9 +2836,9 @@ function renderQuestsTab() {
   const q3Progress = Math.min(3, appState.dailyQuests.lessonsCompletedToday);
 
   const quests = [
-    { title: "10 XP 획득하기", progress: q1Progress, total: 10, icon: 'zap', color: 'var(--color-macaw)' },
-    { title: "레슨에서 10연속 정답 달성하기", progress: q2Progress, total: 2, icon: 'target', color: 'var(--color-fox)' },
-    { title: "레슨 3개 완료하기", progress: q3Progress, total: 3, icon: 'book-open', color: 'var(--color-turtle)' }
+    { title: "10 XP 획득하기", progress: q1Progress, total: 10, icon: 'zap', color: 'var(--color-cyber-mint)' },
+    { title: "레슨에서 10연속 정답 달성하기", progress: q2Progress, total: 2, icon: 'target', color: 'var(--color-streak-amber)' },
+    { title: "레슨 3개 완료하기", progress: q3Progress, total: 3, icon: 'book-open', color: 'var(--color-brand-success)' }
   ];
 
   qContainer.innerHTML = '';
@@ -2841,18 +2848,18 @@ function renderQuestsTab() {
     
     qContainer.innerHTML += `
       <div class="shop-item" style="display: flex; align-items: center; gap: 16px; opacity: ${isDone ? '0.6' : '1'};">
-        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: ${isDone ? 'var(--color-swan)' : 'rgba(255, 255, 255, 0.02)'}; border: 2px solid ${isDone ? 'var(--color-swan)' : q.color}; display: flex; align-items: center; justify-content: center; color: ${isDone ? 'var(--color-wolf)' : q.color};">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: ${isDone ? 'var(--color-glass-border)' : 'rgba(255, 255, 255, 0.02)'}; border: 2px solid ${isDone ? 'var(--color-glass-border)' : q.color}; display: flex; align-items: center; justify-content: center; color: ${isDone ? 'var(--color-slate-gray)' : q.color};">
           <i data-lucide="${isDone ? 'check' : q.icon}" size="32"></i>
         </div>
         <div style="flex: 1;">
-          <div style="font-weight: 700; color: var(--color-eel); font-size: 17px; margin-bottom: 8px;">${q.title}</div>
+          <div style="font-weight: 700; color: var(--color-text-luminous); font-size: 17px; margin-bottom: 8px;">${q.title}</div>
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${pct}%; background-color: ${q.color};"></div>
           </div>
-          <div style="color: var(--color-wolf); font-size: 13px; font-weight: 700; margin-top: 4px;">${q.progress} / ${q.total}</div>
+          <div style="color: var(--color-slate-gray); font-size: 13px; font-weight: 700; margin-top: 4px;">${q.progress} / ${q.total}</div>
         </div>
-        <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 50%; border: 1.5px dashed ${isDone ? 'var(--color-secondary)' : 'var(--color-swan)'}; color: ${isDone ? 'var(--color-bee)' : 'var(--color-wolf)'};">
-          <i data-lucide="gift" size="22" style="filter: ${isDone ? 'drop-shadow(0 0 6px var(--color-bee))' : 'none'};"></i>
+        <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 50%; border: 1.5px dashed ${isDone ? 'var(--color-success-green)' : 'var(--color-glass-border)'}; color: ${isDone ? 'var(--color-charge-gold)' : 'var(--color-slate-gray)'};">
+          <i data-lucide="gift" size="22" style="filter: ${isDone ? 'drop-shadow(0 0 6px var(--color-charge-gold))' : 'none'};"></i>
         </div>
       </div>
     `;
