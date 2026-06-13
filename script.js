@@ -1673,6 +1673,7 @@ let selectedOptionIndex = null;
 let isAnswerChecked = false;
 let activeLessonIndex = 0; // The step number of the node (0 to 34)
 let currentLessonStreak = 0; // Track consecutive correct answers for heart recovery
+let lessonConsecutive10Achieved = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Lucide Icons
@@ -2429,6 +2430,7 @@ function startLesson(nodeIndex) {
   isAnswerChecked = false;
   selectedOptionIndex = null;
   currentLessonStreak = 0;
+  lessonConsecutive10Achieved = false;
 
   document.getElementById('dashboard-view').style.display = 'none';
   document.getElementById('lesson-view').style.display = 'flex';
@@ -2522,6 +2524,9 @@ function checkAnswer() {
     footer.classList.add('correct-state');
     
     currentLessonStreak++;
+    if (currentLessonStreak >= 10) {
+      lessonConsecutive10Achieved = true;
+    }
     let streakRecovered = false;
     if (currentLessonStreak > 0 && currentLessonStreak % 5 === 0) {
       if (appState.hearts < 5) {
@@ -2625,7 +2630,7 @@ function finishLesson() {
   // --- Daily Quest Tracking ---
   appState.dailyQuests.lessonsCompletedToday += 1;
   appState.dailyQuests.xpGainedToday += xpEarned;
-  if (currentLessonStreak >= 10) {
+  if (lessonConsecutive10Achieved) {
     appState.dailyQuests.consecutive10CountToday += 1;
   }
   
