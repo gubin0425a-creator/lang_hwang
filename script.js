@@ -2111,12 +2111,25 @@ function generateLessonData(nodeIndex) {
       typeLabel = "초등 기초 다지기";
       if (qType === 0) {
         // Mnemonic illustration / Easy play
-        questionText = `[초등 기초 - 암기법] 초등학교 5학년도 단번에 외우는 마법의 연상 비법입니다. 다음 설명에 알맞은 핵심 단어를 골라보세요!\n\n"💡 ${concept.mnemonic}"`;
+        let blankedMnemonic = concept.mnemonic;
+        const termRegex = new RegExp(concept.term, 'gi');
+        if (termRegex.test(blankedMnemonic)) {
+          blankedMnemonic = blankedMnemonic.replace(termRegex, '_____');
+        } else {
+          const eqIndex = blankedMnemonic.indexOf('=');
+          if (eqIndex !== -1 && eqIndex < 15) {
+            blankedMnemonic = '_____' + blankedMnemonic.substring(eqIndex);
+          }
+        }
+        questionText = `[초등 기초 - 암기법] 초등학교 5학년도 단번에 외우는 마법의 연상 비법입니다. 다음 설명에 알맞은 핵심 단어를 골라보세요!\n\n"💡 ${blankedMnemonic}"`;
         correctAnswer = concept.term;
         options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
       } else if (qType === 1) {
         // Easy concept explanation
-        questionText = `[초등 기초 - 쉬운 해설] 초등학생 동생에게 다음 내용을 아주 쉽고 재미있게 가르쳐주려고 합니다. 설명이 가리키는 알맞은 단어는?\n\n"${concept.explanation}"`;
+        let blankedExplanation = concept.explanation;
+        const termRegex = new RegExp(concept.term, 'gi');
+        blankedExplanation = blankedExplanation.replace(termRegex, '_____');
+        questionText = `[초등 기초 - 쉬운 해설] 초등학생 동생에게 다음 내용을 아주 쉽고 재미있게 가르쳐주려고 합니다. 설명이 가리키는 알맞은 단어는?\n\n"${blankedExplanation}"`;
         correctAnswer = concept.term;
         options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
       } else {
@@ -2139,7 +2152,10 @@ function generateLessonData(nodeIndex) {
         typeLabel = "개념 청킹";
         const subType = i % 2;
         if (subType === 0) {
-          questionText = `[중등 입문 - 개념 청킹] 다음 학술적 정의에 해당하는 핵심 용어는 무엇인가요?\n\n"${concept.definition}"`;
+          let blankedDef = concept.definition;
+          const termRegex = new RegExp(concept.term, 'gi');
+          blankedDef = blankedDef.replace(termRegex, '_____');
+          questionText = `[중등 입문 - 개념 청킹] 다음 학술적 정의에 해당하는 핵심 용어는 무엇인가요?\n\n"${blankedDef}"`;
           correctAnswer = concept.term;
           options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
         } else {
@@ -2158,7 +2174,10 @@ function generateLessonData(nodeIndex) {
         typeLabel = "맥락 연결";
         const subType = i % 2;
         if (subType === 0) {
-          questionText = `[중등 입문 - 맥락 연결] 아래 설명을 읽고 빈칸에 들어갈 알맞은 용어를 고르세요.\n\n"${concept.explanation}"`;
+          let blankedExplanation = concept.explanation;
+          const termRegex = new RegExp(concept.term, 'gi');
+          blankedExplanation = blankedExplanation.replace(termRegex, '_____');
+          questionText = `[중등 입문 - 맥락 연결] 아래 설명을 읽고 빈칸에 들어갈 알맞은 용어를 고르세요.\n\n"${blankedExplanation}"`;
           correctAnswer = concept.term;
           options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
         } else {
@@ -2211,7 +2230,10 @@ function generateLessonData(nodeIndex) {
       } else if (qType === 20) {
         // Active Recall
         typeLabel = "액티브 리콜";
-        questionText = `[장기 기억 - 액티브 리콜] 아래 뇌과학 설명을 기반으로, 머릿속에서 용어를 인출(Active Recall)하여 고르세요.\n\n"${concept.explanation}"`;
+        let blankedExplanation = concept.explanation;
+        const termRegex = new RegExp(concept.term, 'gi');
+        blankedExplanation = blankedExplanation.replace(termRegex, '_____');
+        questionText = `[장기 기억 - 액티브 리콜] 아래 뇌과학 설명을 기반으로, 머릿속에서 용어를 인출(Active Recall)하여 고르세요.\n\n"${blankedExplanation}"`;
         correctAnswer = concept.term;
         options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
       } else if (qType === 21) {
