@@ -1675,6 +1675,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initDropdowns();
   setupCurriculumModal();
   setupGuidebookToggle();
+
+  // Quick Start Button
+  const quickStartBtn = document.getElementById('quick-start-btn');
+  if (quickStartBtn) {
+    quickStartBtn.addEventListener('click', () => {
+      const progressKey = `${appState.selectedSubject}|${appState.selectedPublisher}|${appState.selectedUnit}`;
+      let nextNode = appState.progress[progressKey] || 0;
+      if (nextNode >= 35) nextNode = 34; // If fully complete, just repeat last node
+      startLesson(nextNode);
+    });
+  }
+
+  // Review Notes Button
+  const reviewNotesBtn = document.getElementById('review-notes-btn');
+  if (reviewNotesBtn) {
+    reviewNotesBtn.addEventListener('click', () => {
+      if (appState.incorrectNotes.length === 0) {
+        alert("아직 오답노트에 저장된 문제가 없습니다. 먼저 학습을 진행해 주세요!");
+        return;
+      }
+      startReviewLesson();
+    });
+  }
   setupNavigation();
   setupShop();
   updateDailyQuestsUI();
