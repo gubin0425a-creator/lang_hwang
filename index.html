@@ -55,6 +55,16 @@
 
     <!-- Main Content -->
     <main class="main-content" id="main-learning-view">
+      <!-- Quick Actions (Student-centric features) -->
+      <div class="quick-actions" style="display: flex; gap: 12px; margin-bottom: 24px;">
+        <button id="quick-start-btn" style="flex: 1; background-color: var(--color-macaw); color: white; border: none; border-radius: 16px; padding: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #1899d6; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="play" fill="currentColor"></i> 빠른 시작 (이어하기)
+        </button>
+        <button id="review-notes-btn" style="flex: 1; background-color: var(--color-whale); color: white; border: none; border-radius: 16px; padding: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #154c79; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="book-open" fill="currentColor"></i> 오답 복습하기
+        </button>
+      </div>
+
       <!-- Unit Header (Banner with expandable Guidebook) -->
       <div class="unit-header" id="unit-header-card">
         <div class="unit-header-main">
