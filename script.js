@@ -2359,6 +2359,9 @@ function generateLessonData(nodeIndex) {
 // 9. Learning Gameplay Loop
 // ============================================================================
 function startLesson(nodeIndex) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
   if (appState.hearts <= 0) {
     alert("하트가 부족합니다! 보석으로 상점에서 충전하거나 나중에 다시 도전해 주세요.");
     return;
@@ -2378,6 +2381,9 @@ function startLesson(nodeIndex) {
 }
 
 function renderQuestion() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
   const currentQ = currentLessonData[currentQuestionIndex];
 
   // Update progress bar
@@ -2535,6 +2541,9 @@ function resetFooter() {
 }
 
 function closeLesson() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
   document.getElementById('lesson-view').style.display = 'none';
   document.getElementById('dashboard-view').style.display = 'flex';
   renderDashboard();
