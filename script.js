@@ -1492,6 +1492,7 @@ const defaultState = {
   selectedPublisher: "비상교과서",
   selectedUnit: "1. 과학의 기초",
   progress: {}, // key: "Subject|Publisher|Unit" -> value: stepIndex (0 to 34. 35 means completed)
+    incorrectNotes: [],
   dailyQuests: {
     lastDate: "",
     xpGainedToday: 0,
@@ -1527,7 +1528,8 @@ try {
   console.error("Failed to load local storage state:", e);
 }
 
-if (!appState.progress) {
+if (!appState.incorrectNotes) appState.incorrectNotes = [];
+  if (!appState.progress) {
   appState.progress = {};
 }
 
