@@ -2390,13 +2390,11 @@ function renderQuestion() {
   // Update Question Text
   document.getElementById('question-text').textContent = currentQ.question;
 
-  // Setup Sound Button (using the target term of the concept)
+  // Hide Sound Button to prevent answer leaks
   const soundBtn = document.getElementById('play-question-sound');
-  soundBtn.style.display = 'flex';
-  soundBtn.onclick = () => playSound(currentQ.targetTerm);
-
-  // Auto-play TTS
-  playSound(currentQ.targetTerm);
+  if (soundBtn) {
+    soundBtn.style.display = 'none';
+  }
 
   // Render Options
   const optionsContainer = document.getElementById('options-container');
@@ -2418,11 +2416,9 @@ function selectOption(index) {
 
   selectedOptionIndex = index;
   
-  // Play the sound of option if it's brief
+  // Play the sound of the selected option
   const currentQ = currentLessonData[currentQuestionIndex];
-  if (currentQ.options[index].length < 15) {
-    playSound(currentQ.options[index]);
-  }
+  playSound(currentQ.options[index]);
 
   const options = document.querySelectorAll('.option-btn');
   options.forEach((btn, i) => {
