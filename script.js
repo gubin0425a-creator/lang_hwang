@@ -2381,7 +2381,8 @@ function generateLessonData(nodeIndex) {
       options: options,
       answer: answerIndex,
       typeLabel: typeLabel,
-      targetTerm: concept.term // Read this term using TTS
+      targetTerm: concept.term, // Read this term using TTS
+      concept: concept
     });
   }
 
