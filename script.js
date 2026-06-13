@@ -2162,265 +2162,93 @@ function generateLessonData(nodeIndex) {
   const concepts = getMajorUnitConcepts(subject, appState.selectedPublisher, unit);
 
   const questions = [];
+  
+  // Calculate difficulty based on progress (0 to 34)
+  // 0-8: diff 0, 9-17: diff 1, 18-26: diff 2, 27-34: diff 3
+  const difficulty = Math.min(3, Math.floor(nodeIndex / 8.5));
+  const optionCount = difficulty === 0 ? 2 : (difficulty === 1 ? 3 : 4);
 
-  // Generate 15 questions per lesson, cycling through available concepts
+  // Generate 15 questions per lesson
   for (let i = 0; i < 15; i++) {
     const concept = concepts[i % concepts.length];
     
-    // Determine the question type dynamically based on the 35 nodes (0 to 34)
-    let qType = 0;
-    let isElementary = false;
-    
-    if (nodeIndex >= 0 && nodeIndex <= 9) {
-      // Phase 0: 초등 기초 다지기 (Elementary Basics)
-      isElementary = true;
-      qType = i % 3; // 3 elementary subtypes
-    } else if (nodeIndex >= 10 && nodeIndex <= 19) {
-      // Phase 1: 중등 개념 입문 (Middle School Entry)
-      qType = 10 + (i % 4); // 4 middle school entry subtypes: 10, 11, 12, 13
-    } else if (nodeIndex >= 20 && nodeIndex <= 29) {
-      // Phase 2: 장기기억 & 함정 (Retrieval & Traps)
-      qType = 20 + (i % 4); // 4 retrieval/traps subtypes: 20, 21, 22, 23
-    } else {
-      // Phase 3: 심화 마스터리 (Feynman & Exam Prep)
-      qType = 30 + (i % 4); // 4 mastery subtypes: 30, 31, 32, 33
+    // Randomize question type to avoid predictable patterns
+    // Types: 0: Fill-in-the-blank (Mnemonic), 1: Concept Matching, 2: OX Misconception, 3: Explanation Match
+    // Adjust probabilities based on difficulty
+    let availableTypes = [0, 1, 2, 3];
+    if (difficulty >= 2) {
+      // Harder: Less mnemonic hints, more direct concept/misconception tests
+      availableTypes = [1, 2, 3];
     }
-
+    
+    const qType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    
     let questionText = "";
     let options = [];
     let correctAnswer = "";
-    let typeLabel = "초등 기초";
+    let typeLabel = "개념 확인";
 
-    if (isElementary) {
-      typeLabel = "초등 기초 다지기";
-      if (qType === 0) {
-        // Mnemonic illustration / Easy play
-        let blankedMnemonic = concept.mnemonic;
-        const termRegex = new RegExp(concept.term, 'gi');
-        if (termRegex.test(blankedMnemonic)) {
-          blankedMnemonic = blankedMnemonic.replace(termRegex, '_____');
-        } else {
-          const eqIndex = blankedMnemonic.indexOf('=');
-          if (eqIndex !== -1 && eqIndex < 15) {
-            blankedMnemonic = '_____' + blankedMnemonic.substring(eqIndex);
-          }
-        }
-        questionText = `[초등 기초 - 암기법] 초등학교 5학년도 단번에 외우는 마법의 연상 비법입니다. 다음 설명에 알맞은 핵심 단어를 골라보세요!\n\n"💡 ${blankedMnemonic}"`;
-        correctAnswer = concept.term;
-        options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-      } else if (qType === 1) {
-        // Easy concept explanation
-        let blankedExplanation = concept.explanation;
-        const termRegex = new RegExp(concept.term, 'gi');
-        blankedExplanation = blankedExplanation.replace(termRegex, '_____');
-        questionText = `[초등 기초 - 쉬운 해설] 초등학생 동생에게 다음 내용을 아주 쉽고 재미있게 가르쳐주려고 합니다. 설명이 가리키는 알맞은 단어는?\n\n"${blankedExplanation}"`;
-        correctAnswer = concept.term;
-        options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
+    if (qType === 0) {
+      // 0: Fill-in-the-blank (Mnemonic)
+      typeLabel = "연상 빈칸";
+      let blankedMnemonic = concept.mnemonic;
+      const termRegex = new RegExp(concept.term, 'gi');
+      if (termRegex.test(blankedMnemonic)) {
+        blankedMnemonic = blankedMnemonic.replace(termRegex, '_____');
       } else {
-        // Friendly OX
-        const isTrue = Math.random() > 0.5;
-        if (isTrue) {
-          questionText = `[초등 기초 - OX 퀴즈] 다음 중 '${concept.term}'에 대해 초등학생 눈높이에서 설명한 내용이 맞을까요?\n\n"쉽게 말해, ${concept.definition}"`;
-          correctAnswer = "그렇다 (O)";
-          options = ["그렇다 (O)", "아니다 (X)"];
-        } else {
-          questionText = `[초등 기초 - OX 퀴즈] 다음 중 '${concept.term}'에 대해 초등학생 눈높이에서 설명한 내용이 맞을까요?\n\n"쉽게 말해, ${concept.misconception}"`;
-          correctAnswer = "아니다 (X)";
-          options = ["그렇다 (O)", "아니다 (X)"];
+        const eqIndex = blankedMnemonic.indexOf('=');
+        if (eqIndex !== -1 && eqIndex < 15) {
+          blankedMnemonic = '_____' + blankedMnemonic.substring(eqIndex);
         }
       }
-    } else {
-      // Middle School & Retrieval Levels
-      if (qType === 10) {
-        // Chunking: matching term and definitions
-        typeLabel = "개념 청킹";
-        const subType = i % 2;
-        if (subType === 0) {
-          let blankedDef = concept.definition;
-          const termRegex = new RegExp(concept.term, 'gi');
-          blankedDef = blankedDef.replace(termRegex, '_____');
-          questionText = `[중등 입문 - 개념 청킹] 다음 학술적 정의에 해당하는 핵심 용어는 무엇인가요?\n\n"${blankedDef}"`;
-          correctAnswer = concept.term;
-          options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-        } else {
-          questionText = `[중등 입문 - 개념 청킹] 핵심 용어 '${concept.term}'의 올바른 사전적 정의를 골라 보세요.`;
-          correctAnswer = concept.definition;
-          options = [correctAnswer, ...getDistractors(subject, "definition", correctAnswer)];
-        }
-      } else if (qType === 11) {
-        // Mnemonics
-        typeLabel = "연상 법칙";
-        questionText = `[중등 입문 - 연상 법칙] 개념을 장기 기억으로 보내기 위한 올바른 뇌과학적 연상 공식은?\n\n[용어: ${concept.term}]`;
-        correctAnswer = concept.mnemonic;
-        options = [correctAnswer, ...getDistractors(subject, "mnemonic", correctAnswer)];
-      } else if (qType === 12) {
-        // Association (Explanation/Context)
-        typeLabel = "맥락 연결";
-        const subType = i % 2;
-        if (subType === 0) {
-          let blankedExplanation = concept.explanation;
-          const termRegex = new RegExp(concept.term, 'gi');
-          blankedExplanation = blankedExplanation.replace(termRegex, '_____');
-          questionText = `[중등 입문 - 맥락 연결] 아래 설명을 읽고 빈칸에 들어갈 알맞은 용어를 고르세요.\n\n"${blankedExplanation}"`;
-          correctAnswer = concept.term;
-          options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-        } else {
-          questionText = `[중등 입문 - 맥락 연결] 핵심 용어 '${concept.term}'의 학술적 맥락과 쉬운 해설로 가장 알맞은 것은?`;
-          correctAnswer = concept.explanation;
-          options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer)];
-        }
-      } else if (qType === 13) {
-        // Half-Recall: Fill-in-the-blank definition
-        typeLabel = "하프 퀴즈";
-        let blankedDef = concept.definition;
-        const regex = new RegExp(concept.term, 'gi');
-        if (regex.test(blankedDef)) {
-          blankedDef = blankedDef.replace(regex, '_____');
-          correctAnswer = concept.term;
-          options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-        } else {
-          const words = concept.definition.split(' ');
-          let targetWord = "";
-          for (let w of words) {
-            if (w.length >= 3 && !w.includes('(') && !w.includes(')')) {
-              targetWord = w;
-              break;
-            }
-          }
-          if (!targetWord && words.length > 0) {
-            targetWord = words[Math.floor(words.length / 2)];
-          }
-          if (targetWord) {
-            blankedDef = concept.definition.replace(targetWord, '_____');
-            correctAnswer = targetWord;
-            const otherDefs = getDistractors(subject, "definition", concept.definition);
-            const otherWords = [];
-            otherDefs.forEach(d => {
-              const dWords = d.split(' ');
-              const w = dWords.find(dw => dw.length >= 3);
-              if (w) otherWords.push(w);
-            });
-            while (otherWords.length < 3) {
-              otherWords.push(otherWords.length === 0 ? "핵심인자" : (otherWords.length === 1 ? "연관관계" : "특수조건"));
-            }
-            options = [correctAnswer, ...otherWords.slice(0, 3)];
-          } else {
-            blankedDef = `_____은(는) ${concept.definition}`;
-            correctAnswer = concept.term;
-            options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-          }
-        }
-        questionText = `[중등 입문 - 하프 퀴즈] 다음 정의에서 빈칸 '_____'에 들어갈 단어를 맞추세요.\n\n"${blankedDef}"`;
-      } else if (qType === 20) {
-        // Active Recall
-        typeLabel = "액티브 리콜";
-        let blankedExplanation = concept.explanation;
-        const termRegex = new RegExp(concept.term, 'gi');
-        blankedExplanation = blankedExplanation.replace(termRegex, '_____');
-        questionText = `[장기 기억 - 액티브 리콜] 아래 뇌과학 설명을 기반으로, 머릿속에서 용어를 인출(Active Recall)하여 고르세요.\n\n"${blankedExplanation}"`;
-        correctAnswer = concept.term;
-        options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
-      } else if (qType === 21) {
-        // Metacognition (Misconceptions)
-        typeLabel = "함정 제거";
-        questionText = `[장기 기억 - 함정 제거] 개념 '${concept.term}'에 대해 학생들이 가장 쉽게 현혹되는 **오답(함정 지문)**은 무엇인가요?`;
-        correctAnswer = concept.misconception;
-        const correctFacts = [concept.definition, concept.explanation];
-        const otherConcepts = [];
-        for (const c of getSubjectConcepts(subject)) {
-          if (c.term !== concept.term) {
-            otherConcepts.push(c.definition);
-          }
-        }
-        if (otherConcepts.length > 0) {
-          correctFacts.push(otherConcepts[Math.floor(Math.random() * otherConcepts.length)]);
-        } else {
-          correctFacts.push("이 개념은 핵심 공통 교과 범위의 중요한 성취기준에 부합합니다.");
-        }
-        options = [correctAnswer, ...correctFacts.slice(0, 3)];
-      } else if (qType === 22) {
-        // Speed challenge: OX
-        typeLabel = "스피드 카드";
-        const isTrueCard = Math.random() > 0.5;
-        if (isTrueCard) {
-          questionText = `[장기 기억 - 스피드 OX] 다음 설명이 용어 '${concept.term}'에 대한 정확한 참(True) 진술인가요?\n\n"${concept.definition}"`;
-          correctAnswer = "그렇다 (O)";
-          options = ["그렇다 (O)", "아니다 (X)"];
-        } else {
-          questionText = `[장기 기억 - 스피드 OX] 다음 설명이 용어 '${concept.term}'에 대한 정확한 참(True) 진술인가요?\n\n"${concept.misconception}"`;
-          correctAnswer = "아니다 (X)";
-          options = ["그렇다 (O)", "아니다 (X)"];
-        }
-      } else if (qType === 23) {
-        // Error Spotting
-        typeLabel = "오류 교정";
-        questionText = `[장기 기억 - 오류 교정] 다음 오개념 지문 속의 오류를 완벽하게 정정하여 올바르게 교정한 설명을 고르세요.\n\n오류: "${concept.misconception}"`;
-        correctAnswer = `올바른 교정: ${concept.definition}`;
-        const otherDefs = getDistractors(subject, "definition", concept.definition).map(d => `올바른 교정: ${d}`);
-        options = [correctAnswer, ...otherDefs];
-      } else if (qType === 30) {
-        // Interleaving: compare two concepts
-        typeLabel = "개념 교차 매핑";
-        let partnerConcept = null;
-        for (const c of concepts) {
-          if (c.term !== concept.term) {
-            partnerConcept = c;
-            break;
-          }
-        }
-        if (!partnerConcept) {
-          // Search in the current unit concepts first
-          for (const c of concepts) {
-            if (c.term !== concept.term) {
-              partnerConcept = c;
-              break;
-            }
-          }
-          if (!partnerConcept) {
-            // Fallback to any other concept of the same subject
-            for (const c of getSubjectConcepts(subject)) {
-              if (c.term !== concept.term) {
-                partnerConcept = c;
-                break;
-              }
-            }
-          }
-        }
-        if (partnerConcept) {
-          questionText = `[심화 - 교차 매핑] '${concept.term}'와 '${partnerConcept.term}'의 핵심 차이점을 교차 분석한 결과로 옳은 것은?`;
-          correctAnswer = `'${concept.term}'은(는) [${concept.definition}]이며, '${partnerConcept.term}'은(는) [${partnerConcept.definition}]입니다.`;
-          const distractor1 = `'${concept.term}'은(는) [${partnerConcept.definition}]이며, '${partnerConcept.term}'은(는) [${concept.definition}]입니다.`;
-          const distractor2 = `'${concept.term}'과 '${partnerConcept.term}'은 정의와 기전이 서로 완벽하게 동일하여 명확한 차이점이 존재하지 않습니다.`;
-          const distractor3 = `'${concept.term}'은(는) [${concept.misconception}]이며, '${partnerConcept.term}'은(는) [${partnerConcept.misconception}]입니다.`;
-          options = [correctAnswer, distractor1, distractor2, distractor3];
-        } else {
-          questionText = `[심화 - 교차 매핑] '${concept.term}'의 핵심 성질과 정의를 가장 심도 있게 기술한 설명은?`;
-          correctAnswer = `'${concept.term}'은(는) ${concept.definition}`;
-          options = [correctAnswer, ...getDistractors(subject, "definition", concept.definition)];
-        }
-      } else if (qType === 31) {
-        // Self-Diagnosis
-        typeLabel = "메타인지 진단";
-        questionText = `[심화 - 메타인지] 용어 '${concept.term}'에 대해 스스로 완전히 습득했는지 메타인지로 확인해 보세요. 용어의 본질적 기전을 바르게 진술한 것은?`;
-        correctAnswer = concept.explanation;
-        options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer)];
-      } else if (qType === 32) {
-        // Feynman Method
-        typeLabel = "파인만 설명";
-        questionText = `[심화 - 파인만 설명] 초등학생 동생에게 용어 '${concept.term}'의 작동 구조를 동생 수준에 맞게 가장 쉽고 재미있는 비유로 가르쳐주는 설명은 무엇인가요?`;
-        correctAnswer = concept.mnemonic;
-        options = [correctAnswer, ...getDistractors(subject, "mnemonic", correctAnswer)];
-      } else if (qType === 33) {
-        // Exam Prep
-        typeLabel = "만점 모의고사";
-        questionText = `[심화 - 만점 모의고사] 다음 중 용어 '${concept.term}'에 관한 실전 학교 시험 출제 분석과 함정 예방 가이드로 옳은 것은?`;
-        correctAnswer = `정의 [${concept.definition}]를 암기하고, 오답 지문 유도 시 주로 출제되는 [${concept.misconception}] 함정을 소거해야 만점이 가능합니다.`;
-        const otherTerms = getDistractors(subject, "term", concept.term);
-        const d1 = `정의 [${concept.misconception}]에 현혹되어 소거하지 못하면 오답이 되므로 절대 주의하십시오.`;
-        const d2 = `이 개념은 난이도가 극도로 낮아 단순 성취도로만 출제되며 틀릴 우려가 전혀 없는 개념입니다.`;
-        const d3 = `'${concept.term}' 대신 '${otherTerms[0] || "유관 개념"}'의 학술 용어 정의 [${concept.definition}]를 동일한 의미로 혼용하면 오답이 됩니다.`;
-        options = [correctAnswer, d1, d2, d3];
+      questionText = `💡 다음 연상 비법의 빈칸을 채워보세요:
+
+"${blankedMnemonic}"`;
+      correctAnswer = concept.term;
+      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
+    } else if (qType === 1) {
+      // 1: Concept Matching (Definition -> Term)
+      typeLabel = "개념 정의";
+      let blankedDef = concept.definition;
+      const termRegex = new RegExp(concept.term, 'gi');
+      blankedDef = blankedDef.replace(termRegex, '_____');
+      questionText = `📖 다음 설명에 해당하는 핵심 개념은 무엇일까요?
+
+"${blankedDef}"`;
+      correctAnswer = concept.term;
+      options = [correctAnswer, ...getDistractors(subject, "term", correctAnswer)];
+    } else if (qType === 2) {
+      // 2: OX Misconception
+      typeLabel = "오개념 OX";
+      const isTrueCard = Math.random() > 0.5;
+      if (isTrueCard) {
+        questionText = `🤔 다음 설명은 맞을까요, 틀릴까요?
+
+"✅ ${concept.term}: ${concept.definition}"`;
+        correctAnswer = "맞다 (O)";
+      } else {
+        questionText = `🤔 다음 설명은 맞을까요, 틀릴까요?
+
+"❌ ${concept.term}: ${concept.misconception}"`;
+        correctAnswer = "틀리다 (X)";
       }
+      options = ["맞다 (O)", "틀리다 (X)"];
+    } else if (qType === 3) {
+      // 3: Explanation Match (Term -> Explanation)
+      typeLabel = "심화 이해";
+      questionText = `🔍 다음 중 '${concept.term}'에 대한 설명으로 알맞은 것은?`;
+      correctAnswer = concept.explanation;
+      options = [correctAnswer, ...getDistractors(subject, "explanation", correctAnswer)];
+    }
+
+    // Limit options based on difficulty (OX questions naturally have 2)
+    if (qType !== 2) {
+      options = options.slice(0, optionCount);
+    }
+
+    // Ensure correctAnswer is always in options (it should be at index 0 before shuffle)
+    if (!options.includes(correctAnswer)) {
+      options[0] = correctAnswer;
     }
 
     // Shuffle options
