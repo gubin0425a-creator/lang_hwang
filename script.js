@@ -877,7 +877,8 @@ let currentLessonData = [];
 let currentQuestionIndex = 0;
 let selectedOptionIndex = null;
 let isAnswerChecked = false;
-let activeLessonIndex = 0; // The step number of the node (0 to 4)
+let activeLessonIndex = 0; // The step number of the node (0 to 14)
+let currentLessonStreak = 0; // Track consecutive correct answers for heart recovery
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Lucide Icons
@@ -1395,6 +1396,7 @@ function startLesson(nodeIndex) {
   currentQuestionIndex = 0;
   isAnswerChecked = false;
   selectedOptionIndex = null;
+  currentLessonStreak = 0;
 
   document.getElementById('dashboard-view').style.display = 'none';
   document.getElementById('lesson-view').style.display = 'flex';
