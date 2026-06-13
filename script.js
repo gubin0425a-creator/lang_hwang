@@ -2173,7 +2173,7 @@ function generateLessonData(nodeIndex) {
   const optionCount = 4; // User requested 4 options always
 
   // Generate 15 questions per lesson
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 10; i++) {
     const concept = concepts[i % concepts.length];
     
     // Randomize question type to avoid predictable patterns
@@ -2494,11 +2494,7 @@ function checkAnswer() {
 function nextQuestion() {
   currentQuestionIndex++;
 
-  if (appState.hearts <= 0) {
-    alert("하트를 모두 잃었습니다! 학습이 강제 종료됩니다. 상점에서 보석으로 리필할 수 있습니다.");
-    closeLesson();
-    return;
-  }
+
 
   if (currentQuestionIndex >= currentLessonData.length) {
     finishLesson();
