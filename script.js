@@ -2448,7 +2448,7 @@ function checkAnswer() {
 
     footer.classList.add('wrong-state');
     
-    // Save to incorrect notes
+        // Save to incorrect notes
     if (currentQ.concept) {
       appState.incorrectNotes.push({
         question: currentQ.question,
@@ -2459,6 +2459,12 @@ function checkAnswer() {
         conceptMnemonic: currentQ.concept.mnemonic,
         timestamp: Date.now()
       });
+    }
+
+    // Fail Logic: Push to end or force skip
+    currentQ.failCount = (currentQ.failCount || 0) + 1;
+    if (currentQ.failCount < 10) {
+      currentLessonData.push(Object.assign({}, currentQ, { failCount: currentQ.failCount }));
     }
 
     // Show mnemonic feedback
