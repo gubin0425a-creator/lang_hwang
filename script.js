@@ -1985,9 +1985,7 @@ function renderStats() {
 
 
 function getTotalNodesForUnit(subject, publisher, unit) {
-  const concepts = getMajorUnitConcepts(subject, publisher, unit);
-  if (!concepts || concepts.length === 0) return 5;
-  return Math.max(5, Math.min(35, Math.ceil(concepts.length * 2.5)));
+  return 25;
 }
 
 function renderDashboard() {
@@ -1997,7 +1995,7 @@ function renderDashboard() {
 
   // Update Header title and sub-description
   document.getElementById('current-unit-title').textContent = appState.selectedUnit;
-  document.getElementById('current-unit-desc').textContent = `${appState.selectedSubject} (${appState.selectedPublisher}) 총 ${totalNodes}단계 마스터 코스`;
+  document.getElementById('current-unit-desc').textContent = `${appState.selectedSubject} (${appState.selectedPublisher}) 총 ${totalNodes}단계 뇌과학 마스터 코스`;
 
   // Update Guidebook Banner Content if Expanded
   const expanded = document.getElementById('guidebook-expanded');
@@ -2008,24 +2006,30 @@ function renderDashboard() {
   // Generate nodeStyles dynamically
   const nodeStyles = [];
   for (let i = 0; i < totalNodes; i++) {
-    let phase = Math.floor((i / totalNodes) * 4); // 0 to 3 or 4
-    if (phase > 3) phase = 3;
-    
-    let icon = 'lock';
+    let phase = 0;
+    let icon = 'book-open';
     let label = '';
     
-    if (phase === 0) {
+    if (i >= 0 && i <= 3) {
+      phase = 0;
       icon = 'book-open';
-      label = `${i+1}단계: 뇌과학 노출 (Step ${i+1})`;
-    } else if (phase === 1) {
+      label = `${i+1}단계: 기초 개념 노출 (뇌과학 시각 암기)`;
+    } else if (i >= 4 && i <= 7) {
+      phase = 1;
       icon = 'brain';
-      label = `${i+1}단계: 개념 이해 (Step ${i+1})`;
-    } else if (phase === 2) {
-      icon = 'alert-circle';
-      label = `${i+1}단계: 오개념 변별 (Step ${i+1})`;
+      label = `${i+1}단계: 기초 상세화 학습 (정교화 시연)`;
+    } else if (i >= 8 && i <= 11) {
+      phase = 2;
+      icon = 'zoom-in';
+      label = `${i+1}단계: 심화 추론 분석 (오개념 정밀 변별)`;
+    } else if (i >= 12 && i <= 18) {
+      phase = 3;
+      icon = 'repeat';
+      label = `${i+1}단계: 단원 전체 복습 (에빙하우스 간격 반복)`;
     } else {
+      phase = 4;
       icon = i === totalNodes - 1 ? 'trophy' : 'award';
-      label = `${i+1}단계: 장기기억 인출 (Step ${i+1})`;
+      label = `${i+1}단계: 시험 실전 대비 (실생활 토론 및 비교)`;
     }
 
     nodeStyles.push({
@@ -2279,29 +2283,27 @@ function generateLessonData(nodeIndex) {
 
   const questions = [];
   
-  // Calculate difficulty based on progression (0 to totalNodes - 1)
-  // Phase 0: diff 0, Phase 1: diff 1, Phase 2: diff 2, Phase 3+: diff 3
-  let difficulty = Math.floor((nodeIndex / totalNodes) * 4);
-  if (difficulty > 3) difficulty = 3;
+  // Map step index (0 to 24) to the 5 distinct brain-based phases requested by the user
+  let availableTypes = [];
+  
+  if (nodeIndex >= 0 && nodeIndex <= 3) {
+    availableTypes = [0, 1]; // Steps 1~4: 기초 개념 노출 (Mnemonic fill & Term matching)
+  } else if (nodeIndex >= 4 && nodeIndex <= 7) {
+    availableTypes = [1, 2]; // Steps 5~8: 기초 상세화 (Definition & basic OX misconception)
+  } else if (nodeIndex >= 8 && nodeIndex <= 11) {
+    availableTypes = [3, 5]; // Steps 9~12: 심화 추론 (Explanation match & detailed misconception)
+  } else if (nodeIndex >= 12 && nodeIndex <= 18) {
+    availableTypes = [0, 1, 2, 3, 5]; // Steps 13~19: 단원 전체 복습 (Interleaved spaced recall review)
+  } else {
+    availableTypes = [4, 5, 6]; // Steps 20~25: 시험 실전 대비 (Comparative, Detailed Misconception, Scenario debates)
+  }
+  
   const optionCount = 4; // User requested 4 options always
-
   const generatedPairs = new Set();
 
   // Generate 10 questions per lesson
   for (let i = 0; i < 10; i++) {
     const concept = concepts[i % concepts.length];
-    
-    // Tighter coupling of question types based on step difficulty
-    let availableTypes = [0, 1, 2, 3, 4, 5, 6];
-    if (difficulty === 0) {
-      availableTypes = [0, 1]; // Step 1: Basic recall (mnemonic fill-in-the-blank, simple term matching)
-    } else if (difficulty === 1) {
-      availableTypes = [1, 2]; // Step 2: Intermediate (definitions & basic OX misconceptions)
-    } else if (difficulty === 2) {
-      availableTypes = [2, 3, 5]; // Step 3: Advanced (OX misconception traps, complex explanation matching, detailed misconception detection)
-    } else {
-      availableTypes = [4, 5, 6]; // Master: Exclusively applied types (Comparative analysis, Misconception analysis, Scenario debates)
-    }
     
     // De-duplication logic: select a qType that hasn't been paired with this concept yet in this lesson
     let qType = null;
