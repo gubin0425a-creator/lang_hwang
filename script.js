@@ -1488,9 +1488,9 @@ const defaultState = {
   streak: 0,
   gems: 500,
   hearts: 5,
-  selectedSubject: "수학",
-  selectedPublisher: "공통",
-  selectedUnit: "1. 수와 식의 계산",
+  selectedSubject: "과학",
+  selectedPublisher: "비상교과서",
+  selectedUnit: "1. 과학의 기초",
   progress: {}, // key: "Subject|Publisher|Unit" -> value: stepIndex (0 to 34. 35 means completed)
   dailyQuests: {
     lastDate: "",
@@ -1503,39 +1503,38 @@ const defaultState = {
     streakFreeze: 0,
     magicBoxExpiry: 0, // timestamp
     magicBoxNextDayEligible: false
+  },
+  incorrectNotes: [], // Array of { question, answer, unit, timestamp }
+  settings: {
+    focusMode: false,
+    anonymousLeaderboard: false
   }
 };
 
 let appState = { ...defaultState };
-// Deep copy nested objects to avoid reference issues
-appState.dailyQuests = { ...defaultState.dailyQuests };
-appState.inventory = { ...defaultState.inventory };
 
 try {
   const saved = localStorage.getItem('allcleState');
   if (saved) {
     const parsed = JSON.parse(saved);
     Object.assign(appState, parsed);
-    // Ensure nested objects exist and maintain their structure
     if (!appState.dailyQuests) appState.dailyQuests = { ...defaultState.dailyQuests };
     if (!appState.inventory) appState.inventory = { ...defaultState.inventory };
+    if (!appState.incorrectNotes) appState.incorrectNotes = [];
+    if (!appState.settings) appState.settings = { ...defaultState.settings };
   }
 } catch (e) {
   console.error("Failed to load local storage state:", e);
 }
 
-// Ensure progress object exists
 if (!appState.progress) {
   appState.progress = {};
 }
 
-// Check and reset daily quests if it's a new day
 const todayDate = new Date().toDateString();
 if (appState.dailyQuests.lastDate !== todayDate) {
-  // If magicBoxNextDayEligible was true, it means they earned it yesterday, 
-  // so today when they open the app, it activates for 30 mins.
   if (appState.inventory.magicBoxNextDayEligible) {
-    appState.inventory.magicBoxExpiry = Date.now() + 30 * 60 * 1000; // 30 mins from now
+    appState.inventory.magicBoxExpiry = Date.now() + 30 * 60 * 1000;
     appState.inventory.magicBoxNextDayEligible = false;
   }
 
@@ -1546,11 +1545,9 @@ if (appState.dailyQuests.lastDate !== todayDate) {
     lessonsCompletedToday: 0,
     rewardsClaimed: 0
   };
-  // Save the state immediately since it's a new day
   localStorage.setItem('allcleState', JSON.stringify(appState));
 }
 
-// Progress migration from old Subject|Unit format to Subject|Publisher|Unit
 const migratedProgress = {};
 Object.keys(appState.progress).forEach(key => {
   const parts = key.split('|');
@@ -1559,7 +1556,6 @@ Object.keys(appState.progress).forEach(key => {
     const oldUnit = parts[1];
     let newUnit = oldUnit;
     
-    // Map math units specifically
     if (subject === "수학") {
       if (oldUnit.includes("유리수") || oldUnit.includes("식의 계산")) {
         newUnit = "1. 수와 식의 계산";
@@ -1575,7 +1571,6 @@ Object.keys(appState.progress).forEach(key => {
         newUnit = "6. 확률";
       }
     } else if (subject === "과학") {
-      // Map science units
       if (oldUnit.includes("물질의 구성")) newUnit = "1. 물질의 구성";
       else if (oldUnit.includes("전기와 자기")) newUnit = "2. 전기와 자기";
       else if (oldUnit.includes("태양계")) newUnit = "3. 태양계";
@@ -1607,6 +1602,9 @@ Object.keys(appState.progress).forEach(key => {
       else if (oldUnit.includes("조선의 건국") || oldUnit.includes("조선의 성립")) newUnit = "4. 조선의 성립과 발전";
       else if (oldUnit.includes("조선 사회") || oldUnit.includes("조선 후기")) newUnit = "5. 조선 사회의 변동";
       else if (oldUnit.includes("근현대") || oldUnit.includes("개항")) newUnit = "6. 근현대 사회로의 변화";
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
     }
     
     const newKey = `${subject}|공통|${newUnit}`;
@@ -1617,7 +1615,6 @@ Object.keys(appState.progress).forEach(key => {
 });
 appState.progress = migratedProgress;
 
-// Sanitize state values against publisherCurriculum (Prevents undefined crashes)
 if (!publisherCurriculum[appState.selectedSubject]) {
   appState.selectedSubject = Object.keys(publisherCurriculum)[0];
 }
@@ -1628,13 +1625,11 @@ if (!publisherCurriculum[appState.selectedSubject][appState.selectedPublisher][a
   appState.selectedUnit = Object.keys(publisherCurriculum[appState.selectedSubject][appState.selectedPublisher])[0];
 }
 
-// Helper to get all concepts of a major unit for a publisher
 function getMajorUnitConcepts(subject, publisher, unit) {
   const keys = (publisherCurriculum[subject] && publisherCurriculum[subject][publisher] && publisherCurriculum[subject][publisher][unit]) || [];
   return keys.map(key => commonConcepts[key]).filter(Boolean);
 }
 
-// Dynamically generate 35-lesson node configuration (zigzag sine wave)
 const nodeStyles = [];
 for (let i = 0; i < 35; i++) {
   let phase = Math.floor(i / 10);
@@ -1671,28 +1666,19 @@ let currentLessonData = [];
 let currentQuestionIndex = 0;
 let selectedOptionIndex = null;
 let isAnswerChecked = false;
-let activeLessonIndex = 0; // The step number of the node (0 to 34)
-let currentLessonStreak = 0; // Track consecutive correct answers for heart recovery
+let activeLessonIndex = 0;
+let currentLessonStreak = 0;
 let lessonConsecutive10Achieved = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize Lucide Icons
   lucide.createIcons();
-
-  // 2. Initialize Dropdowns Safely
   initDropdowns();
-
-  // 3. Setup Curriculum Selector Modal
   setupCurriculumModal();
-
-  // 4. Setup Guidebook Expandable Toggle (Banner)
   setupGuidebookToggle();
-
   setupNavigation();
   setupShop();
   updateDailyQuestsUI();
 
-  // Setup Chest Modal
   document.getElementById('close-chest-btn').addEventListener('click', () => {
     document.getElementById('chest-modal').style.display = 'none';
   });
@@ -1700,7 +1686,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('chest-modal').style.display = 'none';
   });
 
-  // 5. Setup Main Navigation Close Lesson Button
   document.getElementById('close-lesson').addEventListener('click', () => {
     if (confirm("공부를 중단하시겠습니까? 이번 단계의 학습 진행 상황이 저장되지 않습니다.")) {
       closeLesson();
@@ -1709,24 +1694,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('check-btn').addEventListener('click', handleCheckBtnClick);
 
-  // Render initial dashboard stats
   renderStats();
   
-  // Apply Magic Box Boost if active
   if (appState.inventory.magicBoxExpiry > Date.now()) {
     console.log("Magic box boost is active!");
   }
 });
 
-// ============================================================================
-// 3. Dropdowns Setup & Safe Listener Logic
-// ============================================================================
 function initDropdowns() {
   const subjectSelect = document.getElementById('subject-select');
   const publisherSelect = document.getElementById('publisher-select');
   const unitSelect = document.getElementById('unit-select');
 
-  // Populate Subjects
   subjectSelect.innerHTML = '';
   Object.keys(publisherCurriculum).forEach(subject => {
     const opt = document.createElement('option');
@@ -1735,16 +1714,13 @@ function initDropdowns() {
     subjectSelect.appendChild(opt);
   });
 
-  // Ensure subject selection is valid, then set it
   if (!publisherCurriculum[appState.selectedSubject]) {
     appState.selectedSubject = Object.keys(publisherCurriculum)[0];
   }
   subjectSelect.value = appState.selectedSubject;
 
-  // Populate Publishers based on Subject
   updatePublisherDropdown();
   
-  // Ensure publisher selection is valid, then set it
   if (!publisherCurriculum[appState.selectedSubject][appState.selectedPublisher]) {
     appState.selectedPublisher = Object.keys(publisherCurriculum[appState.selectedSubject])[0];
   }
