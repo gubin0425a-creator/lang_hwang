@@ -1511,6 +1511,73 @@ if (!appState.progress) {
   appState.progress = {};
 }
 
+// Progress migration from old Subject|Unit format to Subject|Publisher|Unit
+const migratedProgress = {};
+Object.keys(appState.progress).forEach(key => {
+  const parts = key.split('|');
+  if (parts.length === 2) {
+    const subject = parts[0];
+    const oldUnit = parts[1];
+    let newUnit = oldUnit;
+    
+    // Map math units specifically
+    if (subject === "수학") {
+      if (oldUnit.includes("유리수") || oldUnit.includes("식의 계산")) {
+        newUnit = "1. 수와 식의 계산";
+      } else if (oldUnit.includes("부등식")) {
+        newUnit = "2. 부등식과 연립방정식";
+      } else if (oldUnit.includes("일차함수")) {
+        newUnit = "3. 일차함수";
+      } else if (oldUnit.includes("도형의 성질")) {
+        newUnit = "4. 도형의 성질";
+      } else if (oldUnit.includes("닮음") || oldUnit.includes("피타고라스")) {
+        newUnit = "5. 도형의 닮음과 피타고라스";
+      } else if (oldUnit.includes("확률")) {
+        newUnit = "6. 확률";
+      }
+    } else if (subject === "과학") {
+      // Map science units
+      if (oldUnit.includes("물질의 구성")) newUnit = "1. 물질의 구성";
+      else if (oldUnit.includes("전기와 자기")) newUnit = "2. 전기와 자기";
+      else if (oldUnit.includes("태양계")) newUnit = "3. 태양계";
+      else if (oldUnit.includes("식물")) newUnit = "4. 식물과 에너지";
+      else if (oldUnit.includes("동물")) newUnit = "5. 동물과 에너지";
+      else if (oldUnit.includes("물질의 특성")) newUnit = "6. 물질의 특성";
+      else if (oldUnit.includes("수권")) newUnit = "7. 수권과 해수의 순환";
+      else if (oldUnit.includes("열과")) newUnit = "8. 열과 우리 생활";
+    } else if (subject === "국어") {
+      if (oldUnit.includes("문학")) newUnit = "1. 문학과 표현";
+      else if (oldUnit.includes("읽고")) newUnit = "2. 읽고 쓰는 즐거움";
+      else if (oldUnit.includes("소통")) newUnit = "3. 소통하는 우리";
+      else if (oldUnit.includes("개성")) newUnit = "4. 개성과 설득";
+      else if (oldUnit.includes("간추리고")) newUnit = "5. 간추리고 나누기";
+      else if (oldUnit.includes("사회")) newUnit = "6. 문학과 사회";
+    } else if (subject === "영어") {
+      if (oldUnit.includes("1")) newUnit = "Lesson 1. Expressing Yourself";
+      else if (oldUnit.includes("2")) newUnit = "Lesson 2. Daily Life & Dreams";
+      else if (oldUnit.includes("3")) newUnit = "Lesson 3. Discovering Culture";
+      else if (oldUnit.includes("4")) newUnit = "Lesson 4. Nature & Science";
+      else if (oldUnit.includes("5")) newUnit = "Lesson 5. Creative Thinking";
+      else if (oldUnit.includes("6")) newUnit = "Lesson 6. Health & Manners";
+      else if (oldUnit.includes("7")) newUnit = "Lesson 7. Future & Technology";
+      else if (oldUnit.includes("8")) newUnit = "Lesson 8. Pride of Korea";
+    } else if (subject === "역사") {
+      if (oldUnit.includes("선사")) newUnit = "1. 선사 시대와 고대 국가";
+      else if (oldUnit.includes("남북국")) newUnit = "2. 남북국 시대의 전개";
+      else if (oldUnit.includes("고려")) newUnit = "3. 고려의 성립과 발전";
+      else if (oldUnit.includes("조선의 건국") || oldUnit.includes("조선의 성립")) newUnit = "4. 조선의 성립과 발전";
+      else if (oldUnit.includes("조선 사회") || oldUnit.includes("조선 후기")) newUnit = "5. 조선 사회의 변동";
+      else if (oldUnit.includes("근현대") || oldUnit.includes("개항")) newUnit = "6. 근현대 사회로의 변화";
+    }
+    
+    const newKey = `${subject}|공통|${newUnit}`;
+    migratedProgress[newKey] = appState.progress[key];
+  } else {
+    migratedProgress[key] = appState.progress[key];
+  }
+});
+appState.progress = migratedProgress;
+
 // Sanitize state values against publisherCurriculum (Prevents undefined crashes)
 if (!publisherCurriculum[appState.selectedSubject]) {
   appState.selectedSubject = Object.keys(publisherCurriculum)[0];
